@@ -1,0 +1,225 @@
+{
+  "module": "ZoomInfo Enablement",
+  "lastUpdated": "2026-03-11",
+  "meta": {
+    "currentState": "UK 8 live users • 1 remaining",
+    "nextPriority": "Prepare USA launch",
+    "leadershipNote": "Prepare USA launch and confirm additional licence budget."
+  },
+  "regions": [
+    {
+      "name": "UK",
+      "users": [
+        {
+          "name": "Gary Hollowed",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": true,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Joseph Thorogoo",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Finley Norris",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Barry O'Sullivan",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": true,
+            "targetAccountAlertCreated": true,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Samuel Prus",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": true,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Mandeep Rajput",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Matt Allen",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": true,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": true
+          }
+        },
+        {
+          "name": "Dustin Brogaard",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "USA",
+      "users": [
+        {
+          "name": "Shawn Wilson",
+          "steps": {
+            "licenceAllocated": true,
+            "userActivated": true,
+            "profileSetupComplete": true,
+            "signalsIntentBasicsComplete": true,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Samson Chilampath",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Matthew Wilusz",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Patrick Lindber",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Patrick Kiser",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Kim Menown",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Abbey Elias",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Patrick Wilusz",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        },
+        {
+          "name": "Matt Vaughan",
+          "steps": {
+            "licenceAllocated": false,
+            "userActivated": false,
+            "profileSetupComplete": false,
+            "signalsIntentBasicsComplete": false,
+            "targetAccountListBuilt": false,
+            "targetAccountAlertCreated": false,
+            "firstOutreachLaunched": false
+          }
+        }
+      ]
+    }
+  ]
+}
