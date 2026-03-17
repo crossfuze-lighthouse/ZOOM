@@ -50,7 +50,37 @@
       const [actionExpanded, setActionExpanded] = useState({});
       const [actionExpandedItem, setActionExpandedItem] = useState(null);
 
-      // Quarter badge helper
+      // ── REMOTE DATA ── fetch aeo-data.json, fall back to hardcoded values
+      const DATA_URL = "https://raw.githubusercontent.com/crossfuze-lighthouse/ZOOM/main/aeo-data.json";
+      const [remoteData, setRemoteData] = useState(null);
+      const [dataStatus, setDataStatus] = useState("loading"); // loading | ok | fallback
+
+      React.useEffect(()=>{
+        fetch(DATA_URL)
+          .then(r=>{ if(!r.ok) throw new Error("fetch failed"); return r.json(); })
+          .then(d=>{ setRemoteData(d); setDataStatus("ok"); })
+          .catch(()=>{ setDataStatus("fallback"); });
+      },[]);
+
+      // Helper — read from remote data if available, else return fallback value
+      const rd = (path, fallback) => {
+        if(!remoteData) return fallback;
+        return path.split(".").reduce((o,k)=>o&&o[k]!==undefined?o[k]:undefined, remoteData) ?? fallback;
+      };
+
+      // Resolved score values — live from JSON or hardcoded fallback
+      const compositeScore  = rd("maturity.compositeScore", 2.8);
+      const compositeLevel  = rd("maturity.compositeLevel", 3);
+      const compositeLabel  = rd("maturity.compositeLabel", "Standardized");
+      const dimTechnical    = rd("maturity.dimensions.technical.score", 3.5);
+      const dimContent      = rd("maturity.dimensions.content.score", 2.8);
+      const dimAuthority    = rd("maturity.dimensions.authority.score", 2.6);
+      const dimMeasurement  = rd("maturity.dimensions.measurement.score", 2.5);
+      const peerAvg         = rd("benchmark.peerGroup.peerRankAverage", 2.3);
+      const marketGapPts    = rd("benchmark.marketLeaders.gapPoints", 34);
+      const lastUpdated     = rd("meta.quarter", "Q1 FY26");
+
+
       const QtrBadge = ({ quarter, status }) => {
         const s = {
           complete: "border-[#8FFFDB]/28 bg-[#8FFFDB]/10 text-[#8FFFDB]",
@@ -191,8 +221,8 @@
           ))}
           <div className="ml-auto hidden lg:flex items-center gap-2">
             <div className="signal-pill">
-              <span className="text-[11px] text-white/35">Updated</span>
-              <span className="text-[11px] font-bold text-white/60">Q1 FY26</span>
+              <span className="text-[11px] text-white/35">Updated{dataStatus==="fallback"?" (local)":""}</span>
+              <span className="text-[11px] font-bold text-white/60">{lastUpdated}</span>
             </div>
           </div>
         </div>
@@ -402,10 +432,10 @@
                 <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-white/40">Composite AEO Index</div>
                 <div className="mt-5 flex items-end justify-between">
                   <div className="flex items-end gap-2">
-                    <div className="text-[60px] font-bold leading-none tracking-[-0.04em] text-white">2.8</div>
+                    <div className="text-[60px] font-bold leading-none tracking-[-0.04em] text-white">{compositeScore}</div>
                     <div className="pb-2 text-[20px] leading-none text-white/28">/5</div>
                   </div>
-                  <div className="pb-2 text-[13px] font-bold text-[#71F1F7]">Level 3 · Standardized</div>
+                  <div className="pb-2 text-[13px] font-bold text-[#71F1F7]">Level {compositeLevel} · {compositeLabel}</div>
                 </div>
                 <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
                   <div className="h-full rounded-full" style={{width:"60%",background:"linear-gradient(to right,#F65275 0%,#2CB0CD 30%,#71F1F7 65%,#8FFFDB 100%)"}}/>
@@ -704,7 +734,7 @@
                 <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">Benchmark summary</div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   {[["Direct benchmark","2.3","Average rank across direct peers","border-[#8FFFDB]/25 bg-[#8FFFDB]/[0.09]","text-[#8FFFDB]"],
-                    ["Market gap","−34 pts","Gap to Deloitte (82) — market leader","border-[#F65275]/14 bg-[#F65275]/[0.04]","text-[#F65275]"],
+                    ["Market gap",`−${marketGapPts} pts`,"Gap to Deloitte (82) — market leader","border-[#F65275]/14 bg-[#F65275]/[0.04]","text-[#F65275]"],
                   ].map(([lbl,val,note,tone,vc])=>(
                     <div key={lbl} className={`rounded-[18px] border ${tone} px-4 py-4`}>
                       <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">{lbl}</div>
@@ -894,7 +924,7 @@
                 <div className="rounded-[18px] border border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.06] px-5 py-4 flex flex-col min-h-[130px]">
                   <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">AEO Maturity Score</div>
                   <div className="mt-2 flex items-end gap-1.5">
-                    <div className="text-[2.4rem] font-bold leading-none text-[#8FFFDB]">2.8</div>
+                    <div className="text-[2.4rem] font-bold leading-none text-[#8FFFDB]">{compositeScore}</div>
                     <div className="pb-1 text-[1rem] font-bold leading-none text-white/40">/5</div>
                   </div>
                   <div className="mt-auto pt-3">
@@ -911,7 +941,7 @@
                 <div className="rounded-[18px] border border-[#71F1F7]/16 bg-[#71F1F7]/[0.05] px-5 py-4 flex flex-col">
                   <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">Peer rank average</div>
                   <div className="mt-2 flex items-end justify-between gap-2">
-                    <div className="text-[2.4rem] font-bold leading-none text-[#71F1F7]">2.3</div>
+                    <div className="text-[2.4rem] font-bold leading-none text-[#71F1F7]">{peerAvg}</div>
                     <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/25 pb-1">of 8 peers</div>
                   </div>
                   <div className="mt-3 grid grid-cols-3 divide-x divide-white/8 border-t border-white/8 pt-3">
