@@ -1,0 +1,1389 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEO Maturity | Project Lighthouse | Crossfuze</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Source Sans 3', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #0c1f6b 0%, #070e42 28%, #050b32 58%, #040E3D 100%);
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .signal-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeIn 0.35s ease forwards; }
+  </style>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="min-h-screen text-white">
+  <div id="app"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      const [page, setPage] = useState("exec");
+      const [actionChecked, setActionChecked] = useState({});
+      const [actionExpanded, setActionExpanded] = useState({});
+      const [actionExpandedItem, setActionExpandedItem] = useState(null);
+
+      // Quarter badge helper
+      const QtrBadge = ({ quarter, status }) => {
+        const s = {
+          complete: "border-[#8FFFDB]/28 bg-[#8FFFDB]/10 text-[#8FFFDB]",
+          active:   "border-[#71F1F7]/28 bg-[#71F1F7]/10 text-[#71F1F7]",
+          upcoming: "border-[#C0A6FF]/22 bg-[#C0A6FF]/8 text-[#C0A6FF]",
+        }[status];
+        const lbl = { complete: "✓ Done", active: "Active", upcoming: "Upcoming" }[status];
+        return (
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] ${s}`}>{quarter}</span>
+            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] ${s}`}>{lbl}</span>
+          </div>
+        );
+      };
+
+      const actionSections = [
+        { id:"assess",   number:"01", quarter:"Q1",     quarterStatus:"complete", title:"Assess current search readiness",       goal:"Understand how Crossfuze currently appears across traditional and AI-powered search so visibility gaps can be prioritised.", items:[{id:"a1",text:"Identify top customer questions across the buying journey",detail:"Use sales calls, support tickets, community discussions, SERP features, and query data to surface the real questions buyers ask."},{id:"a2",text:"Audit Crossfuze visibility in AI search results",detail:"Review Google AI Overviews, ChatGPT, Perplexity, and Gemini to see what content surfaces, who is cited, and where Crossfuze is absent."},{id:"a3",text:"Evaluate how AI answers portray Crossfuze",detail:"Check branded queries to confirm that AI tools surface accurate, consistent information about Crossfuze and its ServiceNow capabilities."},{id:"a4",text:"Identify citation share in priority queries",detail:"Assess where Crossfuze already appears and which pages are best placed to win more AI citation."},{id:"a5",text:"Evaluate technical readiness for AI extraction",detail:"Check whether page structure, markup, and accessibility make the site easy for AI systems to crawl, interpret, and extract from."}] },
+        { id:"strategy", number:"02", quarter:"Q1–Q2", quarterStatus:"active",   title:"Define the AEO strategy",              goal:"Translate priority topics, audiences, and intent into a repeatable AEO plan aligned to commercial goals.", items:[{id:"s1",text:"Identify priority ServiceNow topics for AI search",detail:"Focus on the areas where Crossfuze can demonstrate distinctive, authoritative expertise."},{id:"s2",text:"Map target queries to audience intent stages",detail:"Organise questions by awareness, consideration, and decision so content can support the full buyer journey."},{id:"s3",text:"Choose where and how authority will be strengthened",detail:"Prioritise proof signals such as customer stories, expert commentary, original insight, partnerships, and third-party validation."},{id:"s4",text:"Define how success will be measured",detail:"Set a repeatable review cadence for visibility, citation presence, benchmark movement, and downstream engagement."}] },
+        { id:"content",  number:"03", quarter:"Q2",     quarterStatus:"active",   title:"Optimise content for AI engines",       goal:"Structure and write content so it is easy for AI to parse and easy for buyers to trust.", items:[{id:"c1",text:"Add concise, factual summaries",detail:"Lead sections with direct answers before expanding with supporting detail."},{id:"c2",text:"Front-load answers using BLUF",detail:"Use Bottom Line Up Front so key takeaways appear immediately."},{id:"c3",text:"Create self-contained, clearly labelled sections",detail:"Make subtopics work independently with descriptive headings and standalone summaries that AI can cite."},{id:"c4",text:"Break information into scannable formats",detail:"Use FAQs, bullets, lists, tables, and short paragraphs to improve readability and extractability."},{id:"c5",text:"Strengthen E-E-A-T signals",detail:"Add author proof, cited sources, credentials, and original data where possible."},{id:"c6",text:"Update headlines and metadata for clarity",detail:"Use precise, descriptive titles aligned with natural-language buyer questions."},{id:"c7",text:"Reinforce semantic relevance with internal linking",detail:"Connect related pages to strengthen topic clusters and entity associations."}] },
+        { id:"technical",number:"04", quarter:"Q1",     quarterStatus:"complete", title:"Strengthen the technical foundation",   goal:"Ensure the website has the technical structure AI systems need to read, index, and trust it.", items:[{id:"t1",text:"Ensure the site is crawlable and indexable",detail:"Verify that sitemaps, robots instructions, and priority pages allow AI engines to access the right content."},{id:"t2",text:"Use structured content models",detail:"Organise CMS collections, tagging, and page types to reinforce topics and relationships."},{id:"t3",text:"Implement canonicals and avoid duplicate-intent overlap",detail:"Use canonical tags and clean architecture to reduce ambiguity for search and AI crawlers."},{id:"t4",text:"Use schema markup",detail:"Expand structured data so AI engines can interpret services, entities, breadcrumbs, and supporting content correctly."}] },
+        { id:"trust",    number:"05", quarter:"Q2–Q3", quarterStatus:"upcoming", title:"Enhance trust and authority signals",    goal:"Increase the credibility cues AI relies on when selecting authoritative answers.", items:[{id:"tr1",text:"Add clear author attribution and expertise proof points",detail:"Include bios, credentials, and relevant experience to demonstrate subject matter expertise."},{id:"tr2",text:"Cite original research, case studies, or data",detail:"Use proprietary insight, internal data, and customer evidence to give AI engines concrete proof to reference."},{id:"tr3",text:"Encourage high-quality third-party mentions and backlinks",detail:"Strengthen credibility through trusted sites and communities that validate Crossfuze expertise."},{id:"tr4",text:"Maintain consistent brand information across external references",detail:"Ensure company description, boilerplate, and key facts stay accurate across partner, directory, and media sources."},{id:"tr5",text:"Demonstrate freshness signals",detail:"Use visible update dates, refresh key pages regularly, and cite primary sources."}] },
+        { id:"monitor",  number:"06", quarter:"Q2+",    quarterStatus:"upcoming", title:"Monitor, measure, and iterate",          goal:"Create an ongoing feedback loop so Crossfuze can track where it appears in AI-driven search and improve continuously.", items:[{id:"m1",text:"Set up AEO tracking dashboards",detail:"Track brand visibility, share of voice, LLM-referred traffic, and conversions to establish reporting baselines."},{id:"m2",text:"Re-optimise content quarterly based on performance",detail:"Set a regular cadence to update content structure, schema, headers, and internal links based on results."},{id:"m3",text:"Understand how AI systems explore related questions",detail:"Review related questions and subtopics used by AI systems to identify content gaps and prioritise effort."},{id:"m4",text:"Monitor how LLMs evolve",detail:"Track major model changes so movement in AI visibility can be interpreted accurately in reporting."}] },
+      ];
+
+      const totalItems = actionSections.reduce((a,s)=>a+s.items.length,0);
+      const checkedCount = Object.values(actionChecked).filter(Boolean).length;
+      const progress = Math.round((checkedCount/totalItems)*100)||0;
+      const progressLabel = progress===0?"Not started":progress<25?"Early stages":progress<50?"In progress":progress<75?"Building momentum":progress<100?"Almost there":"Execution ready";
+      const sectionProgress = (s)=>({ done:s.items.filter(i=>actionChecked[i.id]).length, total:s.items.length });
+
+      const stages = [
+        {level:1,internal:"Ad Hoc",      name:"Keywords", meaning:"Basic search visibility with minimal AI discoverability"},
+        {level:2,internal:"Developing",  name:"Answers",  meaning:"Content answers relevant questions but lacks full authority"},
+        {level:3,internal:"Standardized",name:"Structure",meaning:"AI-readable content, schema, and semantic clarity"},
+        {level:4,internal:"Advanced",    name:"Pillar",   meaning:"Strong topical authority with growing AI citation"},
+        {level:5,internal:"Best-In-Class",name:"Authority",meaning:"Trusted, cited, and recommended in AI discovery"},
+      ];
+
+      const dimensions = [
+        { title:"Technical Maturity",  score:3.5, label:"Standardized", trend:"↑", trendColor:"text-[#8FFFDB]",
+          accent:"from-[#F65275] via-[#6400EC] via-[#2CB0CD] via-[#71F1F7] to-[#8FFFDB]", border:"border-[#71F1F7]/22", text:"text-[#71F1F7]", dot:"bg-[#71F1F7]",
+          panelTint:"bg-[#71F1F7]/[0.04]", pillTint:"bg-[#71F1F7]/[0.08]", miniTint:"bg-[#71F1F7]/[0.05]",
+          items:[{label:"HTTPS enforcement",score:5},{label:"Canonical structure",score:5},{label:"Structured data rollout",score:4},{label:"Semantic hierarchy",score:3}],
+          summary:"Crossfuze now has the technical foundation required for AI discoverability. Search engines and answer engines can recognise the organisation, interpret priority services, and understand the structure of core solution pages.",
+          completed:["HTTPS enforced across all site variants","Canonical domain validated","Organization + WebSite schema implemented","Service + Breadcrumb schema added to key pages","Article schema deployed on insight content"] },
+        { title:"Content Maturity",    score:2.8, label:"Developing",   trend:"→", trendColor:"text-white/30",
+          accent:"from-[#F65275] via-[#6400EC] via-[#2CB0CD] via-[#71F1F7] to-[#8FFFDB]", border:"border-[#2CB0CD]/22", text:"text-[#71F1F7]", dot:"bg-[#2CB0CD]",
+          panelTint:"bg-[#2CB0CD]/[0.04]", pillTint:"bg-[#2CB0CD]/[0.08]", miniTint:"bg-[#2CB0CD]/[0.05]",
+          items:[{label:"Core service coverage",score:4},{label:"Answer-led structure",score:2},{label:"FAQ readiness",score:2},{label:"Insight-to-service linkage",score:3}],
+          summary:"Coverage exists across core services and solution areas, but answer-focused formatting is still uneven. The next step is to make content easier for AI systems to summarise, compare, and cite.",
+          completed:["Core service pages clearly define offerings","ServiceNow solution pages expanded","Blog content linked to publisher entity"] },
+        { title:"Authority Maturity",  score:2.6, label:"Developing",   trend:"→", trendColor:"text-[#F65275]/70",
+          accent:"from-[#F65275] via-[#6400EC] via-[#2CB0CD] via-[#71F1F7] to-[#8FFFDB]", border:"border-[#F65275]/30", text:"text-[#F65275]", dot:"bg-[#F65275]",
+          panelTint:"bg-[#F65275]/[0.05]", pillTint:"bg-[#F65275]/[0.08]", miniTint:"bg-[#F65275]/[0.05]",
+          items:[{label:"Topical authority",score:3},{label:"External citation signals",score:2},{label:"Industry proof points",score:2},{label:"Thought leadership depth",score:3}],
+          summary:"Crossfuze is now structurally understandable, but not yet consistently cited as a trusted source. Moving from Structure to Pillar will depend on stronger authority signals, industry content, and clearer proof of expertise.",
+          completed:["Organisation entity now clearly defined","Service expertise explicitly mapped","Foundation laid for stronger insight-led authority"] },
+        { title:"Measurement Maturity",score:2.5, label:"Developing",   trend:"→", trendColor:"text-white/30",
+          accent:"from-[#F65275] via-[#6400EC] via-[#2CB0CD] via-[#71F1F7] to-[#8FFFDB]", border:"border-[#2CB0CD]/22", text:"text-[#2CB0CD]", dot:"bg-[#2CB0CD]",
+          panelTint:"bg-[#2CB0CD]/[0.04]", pillTint:"bg-[#2CB0CD]/[0.08]", miniTint:"bg-[#2CB0CD]/[0.05]",
+          items:[{label:"Baseline assessment",score:4},{label:"Competitor benchmarking",score:2},{label:"AI citation tracking",score:2},{label:"Reporting cadence",score:2}],
+          summary:"Crossfuze has completed the initial AEO assessment and technical reassessment, but ongoing measurement is still immature. Formal tracking of citations, answer visibility, and competitive share of AI discovery is the next step.",
+          completed:["Q1 FY26 AEO assessment completed","Baseline maturity position established","Post-implementation reassessment completed"] },
+      ];
+
+      const peer = {
+        chatgpt:[{rank:1,company:"Crossfuze",score:48,highlight:true},{rank:2,company:"FlyForm",score:44},{rank:3,company:"Kaptius",score:42},{rank:4,company:"Pulsar",score:39},{rank:5,company:"UP3",score:38},{rank:6,company:"Intelibliss",score:35},{rank:6,company:"Konversational",score:35},{rank:8,company:"AFJ",score:34}],
+        perplexity:[{rank:1,company:"UP3",score:67},{rank:2,company:"Pulsar",score:62},{rank:2,company:"Kaptius",score:62},{rank:4,company:"Konversational",score:60},{rank:5,company:"Crossfuze",score:57,highlight:true},{rank:5,company:"FlyForm",score:57},{rank:7,company:"Intelibliss",score:43},{rank:8,company:"AFJ",score:37}],
+        gemini:[{rank:1,company:"Crossfuze",score:49,highlight:true},{rank:2,company:"FlyForm",score:47},{rank:2,company:"Intelibliss",score:47},{rank:2,company:"Konversational",score:47},{rank:5,company:"Pulsar",score:46},{rank:6,company:"Kaptius",score:45},{rank:7,company:"UP3",score:43},{rank:7,company:"AFJ",score:43}],
+      };
+      const enterprise = {
+        chatgpt:[{rank:1,company:"Deloitte",score:82},{rank:2,company:"Capgemini",score:76},{rank:3,company:"Cognizant",score:71},{rank:4,company:"Crossfuze",score:48,highlight:true}],
+        perplexity:[{rank:1,company:"Deloitte",score:85},{rank:2,company:"Capgemini",score:78},{rank:3,company:"Cognizant",score:74},{rank:4,company:"Crossfuze",score:57,highlight:true}],
+        gemini:[{rank:1,company:"Deloitte",score:75},{rank:2,company:"Capgemini",score:71},{rank:3,company:"Cognizant",score:62},{rank:4,company:"Crossfuze",score:49,highlight:true}],
+      };
+      const platformMeta = { chatgpt:{label:"ChatGPT",accent:"AI Answer Visibility"}, perplexity:{label:"Perplexity",accent:"AI Discovery Strength"}, gemini:{label:"Gemini",accent:"Search + Answer Presence"} };
+
+      // ── NAV ────────────────────────────────────────────────────────────────
+      const nb = (active) => `inline-flex min-h-[42px] items-center justify-center whitespace-nowrap rounded-full border px-5 py-2 text-[13px] font-semibold leading-none tracking-[0.01em] transition-all ${active?"border-[#71F1F7]/40 bg-[#71F1F7]/12 text-[#8FFFDB] shadow-[0_0_0_1px_rgba(113,241,247,0.08)]":"border-white/10 bg-white/[0.03] text-white/75 hover:-translate-y-0.5 hover:bg-white/[0.055]"}`;
+
+      const Header = () => (
+        <header className="mb-6 px-1 py-3">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div className="flex flex-col items-start">
+              <img src="https://cdn.prod.website-files.com/66f7a9d0051c2479948b2667/6930bea01a665531afb73e42_Crossfuze%20Logo_Cool%20Navy%20Gradient-p-500.png" alt="Crossfuze" className="h-[38px] w-auto object-contain brightness-0 invert" />
+              <div className="mt-1 pl-0.5 text-[10px] font-bold uppercase tracking-[0.38em] text-[#71F1F7]/65">LIGHTHOUSE</div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 xl:justify-end">
+              <button onClick={()=>setPage("exec")} className={nb(page==="exec")}>Exec Summary</button>
+              <button onClick={()=>setPage("overview")} className={nb(page==="overview")}>Maturity Framework</button>
+              <button onClick={()=>setPage("framework")} className={nb(page==="framework")}>Maturity Score</button>
+              <button onClick={()=>setPage("benchmark")} className={nb(page==="benchmark")}>Competitive Benchmark</button>
+              <button onClick={()=>setPage("actions")} className={nb(page==="actions")}>Action Plan</button>
+              <a href="https://crossfuze-lighthouse.github.io/ZOOM/" className="inline-flex min-h-[42px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[#71F1F7] px-5 py-2 text-[13px] font-bold leading-none text-[#040E3D] shadow-[0_8px_24px_rgba(113,241,247,0.28)] hover:-translate-y-0.5 transition-all">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  {/* Light rays */}
+                  <line x1="12" y1="1" x2="12" y2="2.5" opacity="0.6"/>
+                  <line x1="8.5" y1="2.2" x2="9.3" y2="3.4" opacity="0.6"/>
+                  <line x1="15.5" y1="2.2" x2="14.7" y2="3.4" opacity="0.6"/>
+                  {/* Pointed cap */}
+                  <path d="M9.5 6 L12 2.5 L14.5 6 Z" fill="currentColor" fillOpacity="0.7" strokeWidth="1"/>
+                  {/* Lantern room */}
+                  <rect x="9.5" y="6" width="5" height="3" rx="0" fill="currentColor" fillOpacity="0.3" strokeWidth="1"/>
+                  {/* Tower — tapered */}
+                  <path d="M9.5 9 L8 20 L16 20 L14.5 9 Z" fill="currentColor" fillOpacity="0.15" strokeWidth="1.2"/>
+                  {/* Stripes */}
+                  <line x1="8.4" y1="13" x2="15.6" y2="13" strokeWidth="1.5" opacity="0.45"/>
+                  <line x1="8.1" y1="17" x2="15.9" y2="17" strokeWidth="1.5" opacity="0.45"/>
+                  {/* Base */}
+                  <line x1="6" y1="20" x2="18" y2="20" strokeWidth="2"/>
+                  <line x1="5" y1="22.5" x2="19" y2="22.5" strokeWidth="1.5" opacity="0.6"/>
+                </svg>
+                Lighthouse
+              </a>
+            </div>
+          </div>
+        </header>
+      );
+
+      // ── SIGNAL BAR ─────────────────────────────────────────────────────────
+      const SignalBar = () => (
+        <div className="mb-7 flex flex-wrap items-center gap-2 rounded-2xl border border-[#71F1F7]/20 bg-[#71F1F7]/[0.03] px-5 py-3 backdrop-blur-sm">
+          <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/28 mr-2">AEO signals</span>
+          <div className="h-3.5 w-px bg-white/10 hidden sm:block mr-1" />
+          {[
+            {dot:"bg-[#8FFFDB]", label:"AEO Score",   val:"2.8 · L3 Standardized", vc:"text-[#8FFFDB]"},
+            {dot:"bg-[#8FFFDB]", label:"ChatGPT",     val:"#1 of 8 peers",          vc:"text-[#8FFFDB]"},
+            {dot:"bg-[#8FFFDB]", label:"Gemini",      val:"#1 of 8 peers",          vc:"text-[#8FFFDB]"},
+            {dot:"bg-[#F65275]", label:"Perplexity",  val:"#5 of 8 peers",          vc:"text-[#F65275]"},
+            {dot:"bg-[#F65275]", label:"Market gap",  val:"−34 pts to Deloitte",    vc:"text-[#F65275]"},
+            {dot:"bg-[#F65275]", label:"Q2 priority", val:"Authority + Passle",      vc:"text-[#F65275]"},
+          ].map(({dot,label,val,vc})=>(
+            <div key={label} className="signal-pill">
+              <span className={`h-1.5 w-1.5 rounded-full ${dot}`}/>
+              <span className="text-[11px] text-white/40">{label}</span>
+              <span className={`text-[11px] font-bold ${vc}`}>{val}</span>
+            </div>
+          ))}
+          <div className="ml-auto hidden lg:flex items-center gap-2">
+            <div className="signal-pill">
+              <span className="text-[11px] text-white/35">Updated</span>
+              <span className="text-[11px] font-bold text-white/60">Q1 FY26</span>
+            </div>
+          </div>
+        </div>
+      );
+
+      // ── REUSABLE CARD SHELL ─────────────────────────────────────────────────
+      const Card = ({children, className=""}) => (
+        <div className={`rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_22px_56px_rgba(0,0,0,0.22)] ring-1 ring-white/5 backdrop-blur-xl lg:p-7 ${className}`}>{children}</div>
+      );
+
+      const SectionLabel = ({children}) => <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/45">{children}</div>;
+      const H2 = ({children,className=""}) => <h2 className={`mt-2 text-[1.55rem] font-bold leading-tight tracking-tight text-white ${className}`}>{children}</h2>;
+
+      // ── OVERVIEW ────────────────────────────────────────────────────────────
+      const OverviewView = () => (
+        <div className="py-2 fade-in space-y-6">
+          {/* Hero */}
+          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(113,241,247,0.10),transparent_25%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] px-7 py-7 shadow-[0_28px_72px_rgba(0,0,0,0.28)] ring-1 ring-white/5 backdrop-blur-xl md:px-8 md:py-8">
+            <div className="grid gap-6 lg:grid-cols-[1.16fr_0.84fr] lg:items-stretch xl:gap-7">
+              <div className="flex max-w-[44rem] flex-col">
+                <div className="inline-flex self-start rounded-full border border-[#71F1F7]/30 bg-[#71F1F7]/[0.10] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-[#71F1F7]">Model + method</div>
+                <h1 className="mt-4 text-[2.4rem] font-bold tracking-tight text-white md:text-5xl xl:text-[3.2rem] xl:leading-[1.05]">Crossfuze AEO Maturity Framework</h1>
+                <p className="mt-4 text-[15px] leading-7 text-white/68">A simple model for understanding how well Crossfuze can be discovered, interpreted, trusted, and cited by AI search and answer engines.</p>
+              </div>
+              <div className="grid auto-rows-fr gap-3 sm:grid-cols-2">
+                {[
+                  ["Dimensions","4",     "Technical, Content, Authority, Measurement","border-[#71F1F7]/25 bg-[#71F1F7]/[0.07]","text-[#71F1F7]", true],
+                  ["Stages",   "5",     "Ad Hoc to Best-In-Class",                    "border-[#8FFFDB]/22 bg-[#8FFFDB]/[0.06]","text-[#8FFFDB]", true],
+                  ["Scoring",  "Evidence-based", "Assessment inputs plus validated implementation evidence","border-[#2CB0CD]/18 bg-[#2CB0CD]/[0.05]","text-[#2CB0CD]", false],
+                  ["Role",     "Reference model","Foundation for scoring, benchmarking, and action planning","border-white/12 bg-white/[0.04]","text-white/80", false],
+                ].map(([lbl,val,note,tone,valColor,isNum])=>(
+                  <div key={lbl} className={`rounded-[20px] border px-4 py-4 ${tone}`}>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/38">{lbl}</div>
+                    <div className={`mt-2 font-bold leading-none ${isNum?"text-[2.8rem]":"text-[1.3rem] leading-tight mt-3"} ${valColor}`}>{val}</div>
+                    <div className="mt-2 text-[12px] leading-5 text-white/55">{note}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 5-stage model */}
+          <Card>
+            <SectionLabel>Framework structure</SectionLabel>
+            <H2 className="text-[26px] lg:text-[32px]">The five-stage maturity model</H2>
+            <p className="mt-2 text-sm leading-6 text-white/60">A simple progression from basic discoverability to trusted AI recommendation.</p>
+            <div className="mt-5 grid gap-3 xl:grid-cols-5">
+              {[["Level 1","Ad Hoc",      "Keywords", "Limited structure and weak AI interpretation.",                       "border-[#F65275]/20 bg-[#F65275]/[0.06]","bg-[#F65275]/70","text-[#F65275]"],
+                ["Level 2","Developing",  "Answers",  "Content answers relevant questions but lacks full authority.",         "border-[#C0A6FF]/22 bg-[#C0A6FF]/[0.06]","bg-[#C0A6FF]/70","text-[#C0A6FF]"],
+                ["Level 3","Standardized","Structure","AI-readable content, schema, and semantic clarity are in place.",      "border-[#2CB0CD]/26 bg-[#2CB0CD]/[0.07]","bg-[#2CB0CD]/75","text-[#2CB0CD]"],
+                ["Level 4","Advanced",    "Pillar",   "Strong topical authority with growing AI citation.",                   "border-[#71F1F7]/26 bg-[#71F1F7]/[0.07]","bg-[#71F1F7]/75","text-[#71F1F7]"],
+                ["Level 5","Best-In-Class","Authority","Trusted, cited, and recommended in AI discovery.",                    "border-[#8FFFDB]/20 bg-[#8FFFDB]/[0.07]","bg-[#8FFFDB]/75","text-[#8FFFDB]"],
+              ].map(([level,stage,aeo,text,tone,bar,sc])=>(
+                <div key={level} className={`relative flex min-h-[210px] flex-col overflow-hidden rounded-[22px] border p-5 ${tone}`}>
+                  <div className={`absolute inset-x-0 top-0 h-[3px] ${bar}`}/>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/30">{level}</div>
+                  <div className="mt-4 text-[17px] font-bold leading-tight text-white">{stage}</div>
+                  <div className={`mt-1 text-[12px] font-semibold ${sc}`}>AEO Stage: {aeo}</div>
+                  <div className="mt-3 text-[13px] leading-6 text-white/62">{text}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Scoring method */}
+          <Card>
+            <SectionLabel>How scoring works</SectionLabel>
+            <H2 className="text-[26px] lg:text-[32px]">Evidence to score</H2>
+            <p className="mt-2 text-sm leading-6 text-white/60">Four simple steps turn evidence into one Composite AEO Index.</p>
+            <div className="mt-5 grid gap-3 lg:grid-cols-4">
+              {[["01","Assessment inputs","External assessment sets the baseline."],["02","Evidence review","Completed work is validated."],["03","Dimension scoring","Four dimensions are scored."],["04","Composite index","Scores combine into one stage."]].map(([n,t,d],i,arr)=>(
+                <div key={t} className="relative">
+                  <div className="relative flex min-h-[130px] flex-col overflow-hidden rounded-[20px] border border-[#71F1F7]/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018))] p-5">
+                    <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#71F1F7]/0 via-[#71F1F7]/65 to-[#8FFFDB]/0"/>
+                    <div className="inline-flex w-fit rounded-full border border-[#71F1F7]/16 bg-[#71F1F7]/[0.07] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#71F1F7]/75">Step {n}</div>
+                    <div className="mt-3 text-[15px] font-bold leading-tight text-white">{t}</div>
+                    <div className="mt-1 text-sm leading-5 text-white/60">{d}</div>
+                  </div>
+                  {i<arr.length-1&&<div className="pointer-events-none absolute -right-[17px] top-1/2 z-10 hidden -translate-y-1/2 lg:flex">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[#71F1F7]/40 bg-[#71F1F7]/[0.14] backdrop-blur-sm">
+                      <svg className="h-3.5 w-3.5 text-[#71F1F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h12"/><path d="m13 6 6 6-6 6"/></svg>
+                    </div>
+                  </div>}
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 grid gap-5 xl:grid-cols-[1.08fr_0.92fr]">
+              <div className="rounded-[22px] border border-white/8 bg-white/[0.025] p-5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/38">What we score</div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {[["Technical","Schema, structure, and crawl readiness.","border-[#71F1F7]/18 bg-[#71F1F7]/[0.06]","text-[#71F1F7]","bg-[#71F1F7]/60"],
+                    ["Content","Service clarity, answer structure, and FAQs.","border-[#2CB0CD]/18 bg-[#2CB0CD]/[0.06]","text-[#71F1F7]","bg-[#2CB0CD]/60"],
+                    ["Authority","Proof, trust signals, and validation.","border-[#F65275]/45 bg-[#F65275]/[0.09]","text-[#F65275]","bg-[#F65275]/80"],
+                    ["Measurement","Benchmarking, reporting, and tracking.","border-[#2CB0CD]/18 bg-[#2CB0CD]/[0.06]","text-[#2CB0CD]","bg-[#2CB0CD]/60"],
+                  ].map(([t,d,tone,tc,bar])=>(
+                    <div key={t} className={`relative flex min-h-[96px] flex-col overflow-hidden rounded-[18px] border ${tone} p-4`}>
+                      <div className={`absolute inset-x-0 top-0 h-[2px] ${bar}`}/>
+                      <div className={`pt-1 text-sm font-bold ${tc}`}>{t}</div>
+                      <div className="mt-1.5 text-sm leading-5 text-white/68">{d}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-[22px] border border-white/8 bg-white/[0.025] p-5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/38">Maturity scale</div>
+                <div className="mt-4 space-y-2.5">
+                  <div className="grid gap-2.5 grid-cols-2">
+                    {[["1","Ad Hoc",       "0.0–1.4","border-[#F65275]/18 bg-[#F65275]/[0.05]","text-[#F65275]"],
+                      ["2","Developing",   "1.5–2.4","border-[#C0A6FF]/18 bg-[#C0A6FF]/[0.05]","text-[#C0A6FF]"],
+                      ["3","Standardized", "2.5–3.4","border-[#2CB0CD]/22 bg-[#2CB0CD]/[0.08]","text-[#2CB0CD]"],
+                      ["4","Advanced",     "3.5–4.4","border-[#71F1F7]/22 bg-[#71F1F7]/[0.06]","text-[#71F1F7]"],
+                    ].map(([n,s,b,tone,sc])=>(
+                      <div key={n} className={`flex min-h-[56px] items-center justify-between rounded-[14px] border ${tone} px-3.5 py-2.5`}>
+                        <div>
+                          <div className="text-sm font-semibold text-white">Level {n}</div>
+                          <div className="text-[10px] font-medium text-white/42">{b}</div>
+                        </div>
+                        <div className={`text-sm font-bold ${sc}`}>{s}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex min-h-[56px] items-center justify-between rounded-[14px] border border-[#8FFFDB]/20 bg-[#8FFFDB]/[0.06] px-3.5 py-2.5">
+                    <div>
+                      <div className="text-sm font-semibold text-white">Level 5</div>
+                      <div className="text-[10px] font-medium text-white/42">4.5–5.0</div>
+                    </div>
+                    <div className="text-sm font-bold text-[#8FFFDB]">Best-In-Class</div>
+                  </div>
+                </div>
+                <div className="mt-3 rounded-[14px] border border-[#8FFFDB]/14 bg-[#8FFFDB]/[0.06] px-4 py-3">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8FFFDB]/70">Scoring principle</div>
+                  <div className="mt-1.5 text-sm leading-5 text-white/68">Planned work does not count until it is implemented and visible.</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Industry mapping + portal guide */}
+          <div className="grid items-start gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+            <Card className="">
+              <SectionLabel>Industry mapping</SectionLabel>
+              <div className="mt-4 overflow-hidden rounded-2xl border border-white/8">
+                <table className="min-w-full text-left text-sm">
+                  <thead className="bg-white/[0.04] text-white/55">
+                    <tr>{["External model","Crossfuze stage","Meaning"].map(h=><th key={h} className="px-4 py-3 font-semibold">{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {[["Keywords","Ad Hoc","Basic discoverability with limited AI interpretation"],
+                      ["Answers","Developing","Content begins answering buyer questions but lacks full authority"],
+                      ["Structure","Standardized","AI-readable content, schema, and semantic clarity"],
+                      ["Pillar","Advanced","Stronger topic ownership and growing citation potential"],
+                      ["Authority","Best-In-Class","Trusted, cited, and recommended in AI answers"],
+                    ].map(r=>(
+                      <tr key={r[0]} className="border-t border-white/7">
+                        <td className="px-4 py-3 font-semibold text-white">{r[0]}</td>
+                        <td className="px-4 py-3 font-bold text-[#71F1F7]">{r[1]}</td>
+                        <td className="px-4 py-3 text-white/60">{r[2]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+            <Card className="">
+              <SectionLabel>Using the portal</SectionLabel>
+              <div className="mt-4 grid gap-2.5">
+                {[["Maturity Framework","Framework model and scoring method."],["Maturity Score","Current position and supporting evidence."],["Competitive Benchmark","External comparison across AI platforms."],["Action Plan","Priority actions to move up the model."]].map(([t,d])=>(
+                  <div key={t} className="rounded-[16px] border border-white/7 bg-white/[0.02] p-4">
+                    <div className="text-sm font-bold text-white/85">{t}</div>
+                    <div className="mt-1 text-sm leading-5 text-white/48">{d}</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
+      );
+
+      // ── FRAMEWORK / MATURITY SCORE ──────────────────────────────────────────
+      const FrameworkView = () => (
+        <div className="py-2 fade-in space-y-5">
+          {/* Score hero */}
+          <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,rgba(15,40,110,0.6),rgba(12,22,80,0.9))] p-6 shadow-[0_26px_80px_rgba(0,0,0,0.34)] ring-1 ring-white/5 backdrop-blur-xl lg:p-8">
+            <div className="grid gap-8 lg:grid-cols-[1.4fr_0.95fr] lg:items-start">
+              <div>
+                <div className="inline-flex items-center rounded-full border border-[#8FFFDB]/18 bg-[#8FFFDB]/7 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.28em] text-[#8FFFDB]">Crossfuze · AEO Score Hub</div>
+                <h1 className="mt-5 text-[38px] font-bold leading-[0.98] tracking-[-0.03em] text-white lg:text-[52px]">Crossfuze AEO Score</h1>
+                <p className="mt-4 max-w-2xl text-[16px] leading-8 text-white/70">Executive view of Crossfuze's current AEO maturity, benchmark position, strategic gap areas, and the actions required to move from Standardized toward Advanced performance.</p>
+                <div className="mt-5 flex w-full max-w-xl items-center gap-2 rounded-2xl border border-[#8FFFDB]/16 bg-white/5 px-4 py-3 text-sm text-white/60">
+                  <span className="h-2 w-2 rounded-full bg-[#8FFFDB]"/><span>Official working view · Based on Q1 FY26 assessment and completed implementation work</span>
+                </div>
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {[
+                    ["Current stage","Level 3","Technical foundation now in place","border-[#71F1F7]/25 bg-[#71F1F7]/[0.07]","text-[#71F1F7]","text-[#71F1F7]/65"],
+                    ["Next target","Level 4","Authority + answer coverage","border-[#8FFFDB]/22 bg-[#8FFFDB]/[0.06]","text-[#8FFFDB]","text-[#8FFFDB]/65"],
+                    ["Readout","Authority gap","The signal that turns visibility into citation","border-[#F65275]/30 bg-[#F65275]/[0.07]","text-[#F65275]","text-[#F65275]/65"],
+                  ].map(([lbl,val,sub,tone,lc,sc])=>(
+                    <div key={lbl} className={`min-h-[100px] rounded-[20px] border p-5 ${tone}`}>
+                      <div className={`text-[10px] font-bold uppercase tracking-[0.28em] ${lc}`}>{lbl}</div>
+                      <div className="mt-2.5 text-[16px] font-bold leading-tight text-white">{val}</div>
+                      <div className={`mt-1.5 text-sm leading-5 ${sc}`}>{sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.025))] p-5 shadow-[0_20px_55px_rgba(0,0,0,0.22)] ring-1 ring-white/5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.28em] text-white/40">Composite AEO Index</div>
+                <div className="mt-5 flex items-end justify-between">
+                  <div className="flex items-end gap-2">
+                    <div className="text-[60px] font-bold leading-none tracking-[-0.04em] text-white">2.8</div>
+                    <div className="pb-2 text-[20px] leading-none text-white/28">/5</div>
+                  </div>
+                  <div className="pb-2 text-[13px] font-bold text-[#71F1F7]">Level 3 · Standardized</div>
+                </div>
+                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+                  <div className="h-full rounded-full" style={{width:"60%",background:"linear-gradient(to right,#F65275 0%,#2CB0CD 30%,#71F1F7 65%,#8FFFDB 100%)"}}/>
+                </div>
+                <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+                  {dimensions.map(d=>(
+                    <div key={d.title} className={`rounded-[18px] border ${d.border} ${d.miniTint} px-4 py-3`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <div>
+                          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35">{d.title.replace(" Maturity","")}</div>
+                          <div className="mt-1 text-[13px] font-semibold text-white">{d.label}</div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className={`text-[19px] font-bold leading-none ${d.text}`}>{d.score}</div>
+                          <div className={`text-[14px] font-bold ${d.trendColor}`}>{d.trend}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 rounded-[18px] border border-white/8 bg-white/[0.025] px-4 py-3.5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/38">Q1 objective</div>
+                      <div className="mt-1.5 text-sm font-bold text-white">Technical foundation rollout complete</div>
+                    </div>
+                    <div className="text-sm font-bold text-[#8FFFDB]">100%</div>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+                    <div className="h-full w-full rounded-full bg-gradient-to-r from-[#2CB0CD] to-[#71F1F7]"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Progression */}
+          <Card>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <SectionLabel>AEO maturity progression</SectionLabel>
+                <div className="mt-1.5 text-sm text-white/60">Crossfuze moved from Level 2 to Level 3 through the Q1 technical rollout, with Level 4 as the next target.</div>
+              </div>
+              <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">Current: <span className="ml-1.5 font-bold text-[#71F1F7]">Level 3 · Standardized</span></div>
+            </div>
+            <div className="mt-5">
+              <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="h-full bg-gradient-to-r from-[#F65275] via-[#6400EC] via-[#2CB0CD] via-[#71F1F7] to-[#8FFFDB]" style={{width:"60%"}}/>
+                <div className="absolute inset-0 flex items-center justify-between px-[2px]">
+                  {stages.map(s=>{
+                    const dotColor = s.level===1?"#F65275":s.level===2?"#C0A6FF":s.level===3?"#2CB0CD":s.level===4?"#71F1F7":"#8FFFDB";
+                    return <div key={s.level} className="h-3.5 w-3.5 rounded-full border-2" style={{borderColor:dotColor,backgroundColor:s.level<=3?dotColor:"#040E3D"}}/>;
+                  })}
+                </div>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                {stages.map(s=>{
+                  const lc = s.level===1?"#F65275":s.level===2?"#C0A6FF":s.level===3?"#2CB0CD":s.level===4?"#71F1F7":"#8FFFDB";
+                  const rgb = s.level===1?"246,82,117":s.level===2?"192,166,255":s.level===3?"44,176,205":s.level===4?"113,241,247":"143,255,219";
+                  const isActive = s.level===3; const isTarget = s.level===4; const isPeak = s.level===5;
+                  return (
+                  <div key={s.level} className="flex min-h-[210px] flex-col rounded-[22px] border p-5"
+                    style={{borderColor:`rgba(${rgb},${isActive?0.5:isTarget?0.25:isPeak?0.35:0.14})`,backgroundColor:`rgba(${rgb},${isActive?0.09:isTarget?0.05:isPeak?0.08:0.03})`}}>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/30">Level {s.level}</div>
+                    <div className="mt-3.5 text-[15px] font-bold leading-tight text-white">{s.internal}</div>
+                    <div className="mt-1 text-sm font-semibold" style={{color:lc}}>{s.name}</div>
+                    <div className="mt-3 text-[13px] leading-6 text-white/65">{s.meaning}</div>
+                    <div className="mt-auto pt-4">
+                      {s.level===2&&<div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/55">Start · Q1</div>}
+                      {s.level===3&&<div className="inline-flex rounded-full border px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em]" style={{borderColor:`rgba(${rgb},0.35)`,backgroundColor:`rgba(${rgb},0.08)`,color:lc}}>Current · Standardized</div>}
+                      {s.level===4&&<div className="inline-flex rounded-full border px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em]" style={{borderColor:`rgba(${rgb},0.30)`,backgroundColor:`rgba(${rgb},0.08)`,color:lc}}>Target · Q2</div>}
+                    </div>
+                  </div>
+                )})}
+              </div>
+            </div>
+          </Card>
+
+          {/* Q1 delivery */}
+          <Card>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <SectionLabel>Q1 delivery summary</SectionLabel>
+                <div className="mt-1.5 text-sm text-white/60">Delivery completed in Q1 that enabled movement from Developing to Standardized.</div>
+              </div>
+              <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">Outcome: <span className="ml-1.5 font-bold text-[#71F1F7]">Level 2 → Level 3</span></div>
+            </div>
+            <div className="mt-5 grid gap-5 xl:grid-cols-[1.3fr_0.9fr]">
+              <div className="rounded-[22px] border border-[#8FFFDB]/16 bg-[linear-gradient(180deg,rgba(143,255,219,0.06),rgba(255,255,255,0.02))] p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div className="text-[13px] font-bold text-[#8FFFDB]">What we delivered</div>
+                  <div className="rounded-full border border-[#8FFFDB]/16 bg-[#8FFFDB]/7 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8FFFDB]">Delivered Q1 FY26</div>
+                </div>
+                <div className="grid gap-2.5 md:grid-cols-2">
+                  {["HTTPS enforcement across site","Canonical domain validation","Organization + WebSite schema","Service + Breadcrumb schema","Article schema for insights","Structured foundation across priority pages"].map(i=>(
+                    <div key={i} className="flex items-start gap-2.5 rounded-[14px] border border-white/7 bg-white/[0.025] px-3.5 py-2.5 text-sm text-white/72">
+                      <span className="mt-0.5 font-bold text-[#8FFFDB]">✓</span><span>{i}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-[22px] border border-white/8 bg-white/[0.025] p-5">
+                <div className="text-[13px] font-bold text-white">Why this mattered</div>
+                <ul className="mt-3 space-y-2.5 text-sm leading-6 text-white/68">
+                  {["Q4 assessment identified the core barriers to stronger AI discoverability.","Priority gaps were HTTPS and canonical foundations, schema coverage, and clearer semantic structure.","These were the foundations required before authority and answer coverage could become the next unlock."].map(t=>(
+                    <li key={t} className="flex gap-2.5"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#71F1F7]"/><span>{t}</span></li>
+                  ))}
+                </ul>
+                <div className="mt-5 border-t border-white/8 pt-4">
+                  <div className="text-[13px] font-bold text-white">Outcome on maturity</div>
+                  <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+                    {[["Before","Level 2 · Developing"],["After","Level 3 · Standardized"]].map(([l,v])=>(
+                      <div key={l} className="rounded-[14px] border border-white/8 bg-white/[0.025] p-3.5">
+                        <div className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/35">{l}</div>
+                        <div className="mt-1.5 text-sm font-bold text-white">{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-2.5 rounded-[14px] border border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.06] p-3.5">
+                    <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8FFFDB]">Result</div>
+                    <div className="mt-1.5 text-sm font-bold text-white">Technical foundation complete</div>
+                    <div className="mt-1 text-sm leading-5 text-white/60">AI systems can now interpret Crossfuze's structure, services, and core entity signals more clearly.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Dimension detail */}
+          <Card>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <SectionLabel>Dimension detail</SectionLabel>
+                <div className="mt-1.5 text-sm text-white/60">Expandable working view of each maturity dimension.</div>
+              </div>
+              <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60">View: <span className="ml-1.5 font-bold text-[#71F1F7]">Expandable detail</span></div>
+            </div>
+            <div className="mt-5 space-y-3">
+              {dimensions.map(d=>(
+                <details key={d.title} className={`group overflow-hidden rounded-[22px] border ${d.border} ${d.panelTint} bg-[linear-gradient(135deg,rgba(255,255,255,0.035),rgba(255,255,255,0.015))] shadow-[0_18px_40px_rgba(0,0,0,0.16)] ring-1 ring-white/5`}>
+                  <summary className="list-none w-full cursor-pointer px-5 py-5 transition hover:bg-white/[0.02] [&::-webkit-details-marker]:hidden">
+                    <div className="grid gap-4 xl:grid-cols-[220px_minmax(0,1fr)_280px_128px] xl:items-center">
+                      <div>
+                        <div className={`inline-flex rounded-full border border-white/8 ${d.pillTint} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${d.text}`}>{d.title}</div>
+                        <div className="mt-2.5 flex items-end gap-2">
+                          <div className={`text-[38px] font-bold leading-none ${d.text}`}>{d.score}</div>
+                          <div className={`pb-0.5 text-[17px] font-bold ${d.trendColor}`}>{d.trend}</div>
+                          <div className="pb-0.5 text-sm text-white/45">{d.label}</div>
+                        </div>
+                      </div>
+                      <div className="text-sm leading-6 text-white/68 xl:pr-3">{d.summary}</div>
+                      <div className="hidden sm:grid sm:grid-cols-2 sm:gap-2">
+                        {d.items.slice(0,2).map(i=>(
+                          <div key={i.label} className={`flex min-h-[68px] flex-col justify-between rounded-[12px] border border-white/8 ${d.miniTint} px-3 py-2.5`}>
+                            <div className="text-[9px] uppercase leading-4 tracking-[0.16em] text-white/35">{i.label}</div>
+                            <div className={`text-right text-[16px] font-bold ${d.text}`}>{i.score}.0</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex xl:justify-end">
+                        <div className={`inline-flex w-full items-center justify-center rounded-full border ${d.border} ${d.miniTint} px-4 py-2 text-sm font-bold text-white/70 xl:w-[128px]`}>
+                          <span className="group-open:hidden">View detail +</span>
+                          <span className="hidden group-open:inline">Hide detail −</span>
+                        </div>
+                      </div>
+                    </div>
+                  </summary>
+                  <div className="border-t border-white/8 px-5 pb-5 pt-4">
+                    <div className="grid gap-4 lg:grid-cols-[1.2fr_0.9fr]">
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {d.items.map(i=>(
+                          <div key={i.label} className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4">
+                            <div className="text-sm font-bold text-white">{i.label}</div>
+                            <div className="mt-3 flex items-center justify-between gap-3">
+                              <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                                <div className="h-full rounded-full" style={{width:`${i.score*20}%`,background:i.score>=4?"linear-gradient(to right,#8FFFDB,#71F1F7,#2CB0CD)":i.score===3?"linear-gradient(to right,#2CB0CD,#71F1F7,#8FFFDB)":"linear-gradient(to right,#F65275,#2CB0CD,#71F1F7)"}}/>
+                              </div>
+                              <div className={`min-w-[28px] text-right text-sm font-bold ${d.text}`}>{i.score}.0</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/38">Completed</div>
+                        <ul className="mt-3 space-y-2.5 text-sm leading-6 text-white/65">
+                          {d.completed.map(c=><li key={c} className="flex gap-2.5"><span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${d.dot}`}/><span>{c}</span></li>)}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </Card>
+
+          {/* Next phase */}
+          <Card>
+            <SectionLabel>Next phase to reach Advanced (Pillar)</SectionLabel>
+            <div className="mt-4 grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+              {[["FAQ schema","Add FAQ structured data on high-intent solution and service pages to improve answer extraction."],
+                ["Answer-led content","Introduce clearer question-and-answer sections on key pages to improve AI summarisation."],
+                ["Industry authority","Expand vertical-specific proof, case studies, and expertise signals to reinforce credibility."],
+                ["Measurement","Track AI citations, answer visibility, and competitor comparison on priority ServiceNow topics."],
+              ].map(([t,d])=>(
+                <div key={t} className="rounded-[22px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-5">
+                  <div className="text-[15px] font-bold text-white">{t}</div>
+                  <p className="mt-2.5 text-sm leading-6 text-white/62">{d}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      );
+
+      // ── BENCHMARK ───────────────────────────────────────────────────────────
+      const pStyle = {
+        ChatGPT:   {chip:"border-[#71F1F7]/20 bg-[#71F1F7]/7 text-[#71F1F7]",div:"from-[#71F1F7]/0 via-[#71F1F7]/30 to-[#71F1F7]/0",glow:"before:bg-[radial-gradient(circle_at_top_right,rgba(113,241,247,0.12),transparent_55%)]",hl:"border-[#8FFFDB]/55 bg-[linear-gradient(135deg,rgba(143,255,219,0.12),rgba(113,241,247,0.04))] ring-1 ring-[#8FFFDB]/14",sh:"bg-[linear-gradient(135deg,#8FFFDB,#2CB0CD)] text-[#040E3D] shadow-[0_8px_20px_rgba(143,255,219,0.26)]",r1:"bg-gradient-to-br from-[#8FFFDB] to-[#2CB0CD] text-[#040E3D]"},
+        Perplexity:{chip:"border-[#F65275]/18 bg-[#F65275]/6 text-[#F65275]",div:"from-[#F65275]/0 via-[#F65275]/22 to-[#F65275]/0",glow:"before:bg-[radial-gradient(circle_at_top_right,rgba(246,82,117,0.10),transparent_55%)]",hl:"border-[#8FFFDB]/55 bg-[linear-gradient(135deg,rgba(143,255,219,0.12),rgba(113,241,247,0.04))] ring-1 ring-[#8FFFDB]/14",sh:"bg-[linear-gradient(135deg,#8FFFDB,#2CB0CD)] text-[#040E3D] shadow-[0_8px_20px_rgba(143,255,219,0.26)]",r1:"bg-gradient-to-br from-[#F65275] to-[#F65275] text-white"},
+        Gemini:    {chip:"border-[#71F1F7]/20 bg-[#71F1F7]/7 text-[#71F1F7]",div:"from-[#71F1F7]/0 via-[#71F1F7]/30 to-[#71F1F7]/0",glow:"before:bg-[radial-gradient(circle_at_top_right,rgba(113,241,247,0.12),transparent_55%)]",hl:"border-[#8FFFDB]/55 bg-[linear-gradient(135deg,rgba(143,255,219,0.12),rgba(113,241,247,0.04))] ring-1 ring-[#8FFFDB]/14",sh:"bg-[linear-gradient(135deg,#8FFFDB,#2CB0CD)] text-[#040E3D] shadow-[0_8px_20px_rgba(143,255,219,0.26)]",r1:"bg-gradient-to-br from-[#8FFFDB] to-[#2CB0CD] text-[#040E3D]"},
+      };
+      const LCard = ({title,subtitle,rows})=>{
+        const s=pStyle[title]||pStyle.ChatGPT;
+        return (
+          <div className={`relative overflow-hidden rounded-3xl border border-white/7 bg-[linear-gradient(135deg,rgba(255,255,255,0.045),rgba(255,255,255,0.022))] backdrop-blur-xl shadow-[0_18px_42px_rgba(0,0,0,0.16)] ring-1 ring-white/3 before:absolute before:inset-0 ${s.glow}`}>
+            <div className="relative px-5 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <div><h3 className="text-[1.5rem] font-bold text-white">{title}</h3><p className="mt-0.5 text-[12px] font-semibold text-white/60">{subtitle}</p></div>
+                <div className={`rounded-full border px-2.5 py-1 text-[10px] font-bold tracking-[0.05em] ${s.chip}`}>League Table</div>
+              </div>
+              <div className={`mt-4 h-px w-full bg-gradient-to-r ${s.div}`}/>
+            </div>
+            <div className="p-4 pt-0 grid gap-2">
+              {rows.map(r=>(
+                <div key={r.company} className={`relative grid h-[82px] grid-cols-[40px_minmax(0,1fr)_80px] items-center gap-3 rounded-2xl border px-4 py-3 transition-all ${r.highlight?s.hl:"border-white/6 bg-[#040E3D]/45 hover:bg-white/[0.025]"}`}>
+                  {r.highlight&&<div className="absolute left-0 top-2.5 bottom-2.5 w-0.5 rounded-r bg-[linear-gradient(180deg,#8FFFDB,#2CB0CD)] opacity-85"/>}
+                  <div className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${r.rank===1?s.r1:"bg-white/[0.05] text-white/60"}`}>{r.rank}</div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[0.95rem] font-bold ${r.highlight?"text-white":"text-white/80"}`}>{r.company}</span>
+                      {r.rank===1&&<span className={`rounded-full px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${r.highlight?"bg-[#8FFFDB]/12 text-[#8FFFDB] border border-[#8FFFDB]/18":"bg-white/7 text-white/52"}`}>Leader</span>}
+                    </div>
+                    <p className="text-[10px] text-white/35">Rank #{r.rank}</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <div className={`inline-flex h-9 w-[52px] items-center justify-center rounded-xl text-[1.15rem] font-bold ${r.highlight?s.sh:"bg-white/[0.04] text-white/75"}`}>{r.score}</div>
+                    <p className="mt-0.5 text-[9px] uppercase tracking-[0.16em] text-white/30">AEO</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      };
+
+      const BenchSection = ({eyebrow,title,summary,data})=>(
+        <section className="mt-7 overflow-hidden rounded-[28px] border border-white/[0.04] bg-[linear-gradient(135deg,rgba(255,255,255,0.03),rgba(255,255,255,0.013))] shadow-[0_12px_28px_rgba(0,0,0,0.12)] ring-1 ring-white/[0.02] backdrop-blur-xl">
+          <div className="border-b border-white/[0.05] px-6 py-5 md:px-7">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8FFFDB]">{eyebrow}</p>
+                <h2 className="mt-1.5 text-[1.75rem] font-bold tracking-tight text-white">{title}</h2>
+                <p className="mt-1.5 max-w-3xl text-[13px] leading-[1.7] text-white/68">{summary}</p>
+              </div>
+              {eyebrow==="Direct benchmark"&&<div className="inline-flex self-start md:self-auto items-center gap-2 rounded-full border border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.07] px-3 py-1.5 text-[10px] font-bold text-white ring-1 ring-[#8FFFDB]/7"><span className="h-1.5 w-1.5 rounded-full bg-[#8FFFDB]"/>Leads on 2 of 3 engines</div>}
+            </div>
+          </div>
+          <div className="p-6 md:p-7">
+            <div className="grid gap-5 xl:grid-cols-3">
+              {Object.entries(data).map(([k,rows])=><LCard key={k} title={platformMeta[k].label} subtitle={platformMeta[k].accent} rows={rows}/>)}
+            </div>
+          </div>
+        </section>
+      );
+
+      const BenchmarkView = () => (
+        <div className="py-2 fade-in">
+          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(113,241,247,0.09),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.022))] px-7 py-7 shadow-[0_28px_72px_rgba(0,0,0,0.28)] ring-1 ring-white/5 backdrop-blur-xl md:px-8 md:py-8">
+            <div className="grid gap-6 lg:grid-cols-[1.16fr_0.84fr] lg:items-stretch xl:gap-7">
+              <div className="flex max-w-[44rem] flex-col">
+                <div className="inline-flex self-start rounded-full border border-[#8FFFDB]/20 bg-[#8FFFDB]/7 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-[#8FFFDB]">Competitive benchmark</div>
+                <h1 className="mt-3.5 text-[2.2rem] font-bold tracking-tight text-white md:text-[3rem] md:leading-[1.04] xl:text-[3.1rem]">AI Visibility Benchmark</h1>
+                <p className="mt-3 text-[15px] leading-[1.7] text-white/68">Crossfuze's current AI visibility across direct competitors and a broader market-leader set.</p>
+                <div className="mt-4 rounded-[16px] border border-[#2CB0CD]/20 bg-[#2CB0CD]/[0.06] px-4 py-3">
+                  <div className="flex items-center gap-2 text-[12px] text-white/68">
+                    <span className="h-2 w-2 rounded-full bg-[#2CB0CD]"/>
+                    <span><span className="font-bold text-white">Independent scoring</span> · Source: <span className="font-bold text-[#71F1F7]">HubSpot AEO Grader · 7 Mar 2026</span></span>
+                  </div>
+                </div>
+                <div className="mt-3 rounded-[20px] border border-[#71F1F7]/20 bg-[linear-gradient(135deg,rgba(113,241,247,0.14),rgba(113,241,247,0.05))] px-5 py-4 ring-1 ring-white/5">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#71F1F7]/80">Executive takeaway</div>
+                  <div className="mt-1.5 text-[1.7rem] font-bold leading-[1.03] text-white">Strong against direct peers</div>
+                  <div className="mt-1 text-[14px] text-white/75">34 points below Deloitte — the market ceiling. Peer group is won.</div>
+                </div>
+              </div>
+              <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.022))] p-5 shadow-[0_20px_48px_rgba(0,0,0,0.16)] ring-1 ring-white/5 xl:p-5">
+                <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">Benchmark summary</div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                  {[["Direct benchmark","2.3","Average rank across direct peers","border-[#8FFFDB]/25 bg-[#8FFFDB]/[0.09]","text-[#8FFFDB]"],
+                    ["Market gap","−34 pts","Gap to Deloitte (82) — market leader","border-[#F65275]/14 bg-[#F65275]/[0.04]","text-[#F65275]"],
+                  ].map(([lbl,val,note,tone,vc])=>(
+                    <div key={lbl} className={`rounded-[18px] border ${tone} px-4 py-4`}>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">{lbl}</div>
+                      <div className={`mt-2 text-[3rem] font-bold leading-none ${vc}`}>{val}</div>
+                      <div className="mt-2 text-[13px] text-white/62">{note}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 rounded-[16px] border border-white/8 bg-white/[0.025] px-4 py-3.5">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35">Benchmark scope</div>
+                  <div className="mt-1.5 text-[13px] leading-6 text-white/58">Average position across ChatGPT, Perplexity, and Gemini using selected peer and market benchmark sets.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <BenchSection eyebrow="Direct benchmark" title="Direct competitor benchmark" summary="Crossfuze compared against a selected peer group including FlyForm, UP3, Intelibliss, Konversational, AFJ, Pulsar, and Kaptius." data={peer}/>
+          <BenchSection eyebrow="Market benchmark" title="Market leader benchmark" summary="Crossfuze compared against Deloitte, Capgemini, and Cognizant. Deloitte leads on all three platforms — this is the market ceiling, not a direct competitive set." data={enterprise}/>
+        </div>
+      );
+
+      // ── ACTIONS ─────────────────────────────────────────────────────────────
+      const ActionsView = () => (
+        <div className="py-2 fade-in space-y-5">
+          {/* Hero */}
+          <div className="overflow-hidden rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top_right,rgba(113,241,247,0.07),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_26px_70px_rgba(0,0,0,0.26)] ring-1 ring-white/5 backdrop-blur-xl md:p-7 xl:p-8">
+            <div className="grid gap-5 xl:grid-cols-[1.58fr_0.62fr] xl:items-start">
+              <div>
+                <div className="inline-flex rounded-full border border-[#8FFFDB]/20 bg-[#8FFFDB]/7 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.24em] text-[#8FFFDB]">Crossfuze · Action plan</div>
+                <h1 className="mt-3.5 text-[2rem] font-bold tracking-tight text-white md:text-[2.8rem] md:leading-[1.04] xl:text-[3rem]">Action Plan</h1>
+                <p className="mt-2.5 max-w-[40rem] text-[14px] leading-[1.6] text-white/68">Executive action view for moving Crossfuze from <span className="font-bold text-white">Standardized</span> toward <span className="font-bold text-white">Advanced</span> through stronger answers, authority, and evidence discipline.</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-[12px] border border-white/8 bg-amber-400/[0.08] px-4 py-2 text-[11px] text-white/65"><span className="h-2 w-2 rounded-full bg-amber-400"/><span className="font-bold text-white">Execution checklist</span> · Operating view</div>
+                  <div className="inline-flex items-center gap-2 rounded-[12px] border border-white/8 bg-white/[0.025] px-4 py-2 text-[11px] text-white/62"><span className="font-bold text-white">Stage shift</span><span className="text-[#71F1F7]">Standardized → Advanced</span></div>
+                </div>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
+                  ["Current stage","Standardized","Level 3",       "border-[#71F1F7]/25 bg-[#71F1F7]/[0.07]", "text-[#71F1F7]"],
+                  ["Target",       "Advanced",    "Level 4",       "border-[#8FFFDB]/22 bg-[#8FFFDB]/[0.06]", "text-[#8FFFDB]"],
+                  ["Primary gap",  "Authority + answers","Next unlock","border-[#F65275]/30 bg-[#F65275]/[0.07]","text-[#F65275]"],
+                  ["Focus window", "Q2 execution","Next 90 days",  "border-[#2CB0CD]/22 bg-[#2CB0CD]/[0.06]", "text-[#2CB0CD]"],
+                ].map(([l,v,s,tone,sc])=>(
+                  <div key={l} className={`rounded-[20px] border px-4 py-3.5 ${tone}`}>
+                    <div className="text-[9px] font-bold uppercase tracking-[0.22em] text-white/32">{l}</div>
+                    <div className="mt-1.5 text-[1.05rem] font-bold text-white">{v}</div>
+                    <div className={`mt-0.5 text-[11px] ${sc}`}>{s}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-5 xl:grid-cols-[1.38fr_0.58fr] xl:items-start">
+            <Card className="">
+              {/* Header stats */}
+              <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                <div>
+                  <SectionLabel>AEO execution checklist</SectionLabel>
+                  <H2 className="text-[1.6rem] md:text-[1.8rem]">Execution checklist</H2>
+                  <p className="mt-2 max-w-2xl text-[13px] leading-6 text-white/58">Expand each workstream, review the goal, mark items complete, and open detail for extra context.</p>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-3 xl:min-w-[21rem]">
+                  {[["Q2 actions",`${progress}%`,progressLabel,"text-[#71F1F7]"],["Completed",checkedCount,`of ${totalItems} actions`,"text-white/50"],["Workstreams","6","Assess to monitor","text-[#71F1F7]"]].map(([l,v,s,sc])=>(
+                    <div key={l} className="flex min-h-[96px] flex-col justify-between rounded-[18px] border border-white/8 bg-white/[0.025] px-4 py-3 text-center">
+                      <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/32">{l}</div>
+                      <div className="text-[1.6rem] font-bold text-white">{v}</div>
+                      <div className={`text-[11px] ${sc}`}>{s}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 h-[3px] overflow-hidden rounded-full bg-white/8">
+                <div className="h-full rounded-full transition-all duration-500" style={{width:`${progress}%`,background:"linear-gradient(to right,#F65275 0%,#2CB0CD 30%,#71F1F7 65%,#8FFFDB 100%)"}}/>
+              </div>
+
+              {/* Sections */}
+              <div className="mt-4 grid gap-3">
+                {actionSections.map(section=>{
+                  const {done,total}=sectionProgress(section);
+                  const isOpen=!!actionExpanded[section.id];
+                  return (
+                    <div key={section.id} className="overflow-hidden rounded-[22px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.02))]">
+                      <button type="button" onClick={()=>setActionExpanded(p=>({...p,[section.id]:!p[section.id]}))} className="flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-white/[0.02]">
+                        <div className="flex w-11 shrink-0 flex-col items-center rounded-[10px] border border-[#71F1F7]/28 bg-[#71F1F7]/[0.09] py-2 text-center">
+                          <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/45">Step</div>
+                          <div className="mt-0.5 text-[13px] font-bold text-[#71F1F7]">{section.number}</div>
+                        </div>
+                        <div className="min-w-0 flex-1 pr-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-[0.9rem] font-bold text-white">{section.title}</span>
+                            <QtrBadge quarter={section.quarter} status={section.quarterStatus}/>
+                          </div>
+                          <div className="mt-0.5 text-[12px] leading-5 text-white/48">{section.goal}</div>
+                        </div>
+                        <div className="hidden items-center gap-1 lg:flex">
+                          {section.items.map(i=><span key={i.id} className={`h-2 w-2 rounded-full ${actionChecked[i.id]?"bg-[#8FFFDB] shadow-[0_0_8px_rgba(143,255,219,0.4)]":"bg-white/8"}`}/>)}
+                        </div>
+                        <div className="w-[3.5rem] shrink-0 text-right">
+                          <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/28">Done</div>
+                          <div className="mt-0.5 text-[12px] font-semibold text-white/58">{done}/{total}</div>
+                        </div>
+                        <div className={`shrink-0 text-sm text-white/30 transition-transform ${isOpen?"rotate-180":""}`}>▼</div>
+                      </button>
+                      {isOpen&&(
+                        <div className="border-t border-white/8 bg-[#040E3D]/55 px-5 py-4">
+                          <div className="mb-3 rounded-[12px] border border-white/6 bg-white/[0.02] px-4 py-2.5 text-[12px] leading-6 text-white/50"><span className="font-bold text-white/68">Goal:</span> {section.goal}</div>
+                          <div className="grid gap-2">
+                            {section.items.map(item=>{
+                              const isDone=!!actionChecked[item.id];
+                              const isExp=actionExpandedItem===item.id;
+                              return (
+                                <div key={item.id} className="rounded-[14px] border border-white/6 bg-white/[0.02] px-4 py-3 transition hover:border-white/10 hover:bg-white/[0.035]">
+                                  <div className="flex items-start gap-3">
+                                    <button type="button" onClick={()=>setActionChecked(p=>({...p,[item.id]:!p[item.id]}))} className={`mt-0.5 flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-[4px] border transition ${isDone?"border-[#8FFFDB] bg-[#8FFFDB] text-[#040E3D] text-[10px]":"border-white/16 bg-transparent text-transparent hover:border-[#8FFFDB]/45"}`}>✓</button>
+                                    <div className="min-w-0 flex-1">
+                                      <div className={`text-[13px] leading-6 ${isDone?"text-white/30 line-through decoration-white/10":"text-white/75"}`}>{item.text}</div>
+                                      {isExp&&<div className="mt-2 border-t border-dashed border-white/8 pt-2 text-[12px] leading-6 text-white/48">{item.detail}</div>}
+                                    </div>
+                                    <button type="button" onClick={()=>setActionExpandedItem(p=>p===item.id?null:item.id)} className="shrink-0 text-[10px] uppercase tracking-[0.14em] text-white/28 hover:text-white/50">{isExp?"Hide":"Detail"}</button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button type="button" onClick={()=>{setActionChecked({});setActionExpandedItem(null);}} className="rounded-full border border-white/8 bg-white/[0.025] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/48 hover:border-white/14 hover:text-white/65">Reset checklist</button>
+              </div>
+            </Card>
+
+            {/* Priority sidebar */}
+            <div className="rounded-[26px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018))] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.18)] ring-1 ring-white/5 backdrop-blur-xl xl:sticky xl:top-6">
+              <SectionLabel>Executive summary</SectionLabel>
+              <H2 className="text-[1.55rem]">Priority moves</H2>
+              <div className="mt-4 grid gap-2.5">
+                {[
+                  ["Priority 1","Expand answer-led content",       "FAQ schema + answer structure on priority pages","Q2",   "#71F1F7","113,241,247"],
+                  ["Priority 2","Strengthen authority signals",     "Proof points, insight depth, and expert relevance","Q2–Q3","#F65275","246,82,117"],
+                  ["Priority 3","Improve measurement discipline",   "Track visibility, citation movement, and competitors","Q2+","#2CB0CD","44,176,205"],
+                ].map(([lbl,t,d,qtr,ac,rgb])=>(
+                  <div key={lbl} className="rounded-[18px] border px-4 py-4" style={{borderColor:`rgba(${rgb},0.25)`,backgroundColor:`rgba(${rgb},0.05)`}}>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{color:ac}}>{lbl}</div>
+                      <span className="inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em]" style={{borderColor:`rgba(${rgb},0.25)`,backgroundColor:`rgba(${rgb},0.08)`,color:ac}}>{qtr}</span>
+                    </div>
+                    <div className="mt-2 text-[0.9rem] font-bold leading-[1.3] text-white">{t}</div>
+                    <div className="mt-1 text-[12px] leading-5 text-white/50">{d}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      // ── EXEC SUMMARY VIEW ───────────────────────────────────────────────────
+      const ExecSummaryView = () => (
+        <div className="py-2 fade-in space-y-7">
+
+          {/* ── SECTION 1: HERO ── */}
+          <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,rgba(12,32,100,0.70),rgba(8,16,58,0.94))] px-7 py-8 shadow-[0_32px_80px_rgba(0,0,0,0.42)] ring-1 ring-white/5 backdrop-blur-xl md:px-10 md:py-10">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(113,241,247,0.08),transparent_48%),radial-gradient(ellipse_at_bottom_left,rgba(143,255,219,0.05),transparent_42%)]"/>
+            <div className="relative grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
+
+              {/* Left — statement */}
+              <div className="lg:pt-6">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="inline-flex rounded-full border border-[#8FFFDB]/22 bg-[#8FFFDB]/8 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.28em] text-[#8FFFDB]">AEO · Executive Summary</span>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5 text-[11px] text-white/42"><span className="h-1.5 w-1.5 rounded-full bg-[#8FFFDB]"/>Q1 FY26 · Current</span>
+                </div>
+                <h1 className="mt-5 text-[2.6rem] font-bold leading-[1.06] tracking-[-0.03em] text-white md:text-[3.2rem] xl:text-[3.6rem]">
+                  Ranked #1 among ServiceNow peers on ChatGPT and Gemini.
+                </h1>
+                <p className="mt-4 text-[14px] leading-[1.7] text-white/65 whitespace-nowrap">
+                  Technical foundation complete. Q2 shifts to authority — the signal that turns visibility into citation.
+                </p>
+              </div>
+
+              {/* Right — KPI cards stacked */}
+              <div className="flex flex-col gap-3">
+
+                <div className="rounded-[18px] border border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.06] px-5 py-4 flex flex-col min-h-[130px]">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">AEO Maturity Score</div>
+                  <div className="mt-2 flex items-end gap-1.5">
+                    <div className="text-[2.4rem] font-bold leading-none text-[#8FFFDB]">2.8</div>
+                    <div className="pb-1 text-[1rem] font-bold leading-none text-white/40">/5</div>
+                  </div>
+                  <div className="mt-auto pt-3">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                        <div className="h-full w-[56%] rounded-full" style={{background:"linear-gradient(to right,#F65275 0%,#F65275 8%,#2CB0CD 35%,#71F1F7 70%,#8FFFDB 100%)"}}/>
+                      </div>
+                      <span className="text-[9px] font-bold text-white/40">L3</span>
+                    </div>
+                    <div className="text-[9px] text-white/22">Standardized · Q2 targets Level 4</div>
+                  </div>
+                </div>
+
+                <div className="rounded-[18px] border border-[#71F1F7]/16 bg-[#71F1F7]/[0.05] px-5 py-4 flex flex-col">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">Peer rank average</div>
+                  <div className="mt-2 flex items-end justify-between gap-2">
+                    <div className="text-[2.4rem] font-bold leading-none text-[#71F1F7]">2.3</div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/25 pb-1">of 8 peers</div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-3 divide-x divide-white/8 border-t border-white/8 pt-3">
+                    {[["3","Platforms"],["8","Direct peers"],["#1","ChatGPT + Gemini"]].map(([v,l])=>(
+                      <div key={l} className="flex flex-col items-center gap-0.5 px-2">
+                        <div className="text-[1.25rem] font-bold text-[#71F1F7] leading-none">{v}</div>
+                        <div className="text-[9px] text-white/30 leading-tight text-center mt-1">{l}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5 border-t border-white/6 pt-2.5">
+                    <span className="text-[9px] text-white/22">★</span>
+                    <span className="text-[9px] text-white/22">HubSpot AEO Grader · 7 Mar 2026 · ServiceNow Implementation</span>
+                  </div>
+                </div>
+
+                <div className="rounded-[18px] border border-[#F65275]/18 bg-[#F65275]/[0.04] px-5 py-4 flex flex-col min-h-[130px]">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/35">The remaining gap</div>
+                  <div className="mt-2 flex items-end justify-between gap-2">
+                    <div className="text-[2.4rem] font-bold leading-none text-[#F65275]">Authority</div>
+                    <div className="text-[11px] text-white/40 text-right pb-1">Expert voices<br/>Proof · citation signals</div>
+                  </div>
+                  <div className="mt-auto pt-3 text-[9px] text-white/22">Technical parity achieved Q1</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {/* ── WHAT IS AEO — tab panel ── */}
+          {(()=>{
+            const [tab, setTab] = React.useState("aeo");
+            const tabs = [
+              { id:"aeo",  accent:"#71F1F7", rgb:"113,241,247", label:"What is AEO" },
+              { id:"why",  accent:"#8FFFDB", rgb:"143,255,219", label:"Why it matters" },
+              { id:"opp",  accent:"#C0A6FF", rgb:"192,166,255", label:"The opportunity" },
+            ];
+            const panels = {
+              aeo: {
+                heading:"Answer Engine Optimisation",
+                body:"How Crossfuze earns a place in AI-generated answers — the shortlists buyers now build before they ever visit a website.",
+                accent:"#71F1F7", rgb:"113,241,247",
+                stats:[
+                  ["2.5B",   "AI search queries processed daily across all platforms."],
+                  ["42%",    "of B2B marketers now reallocating budget from SEO to AEO."],
+                  ["35–45%", "of Fortune 1000 already have dedicated AEO programmes."],
+                ],
+                source:"AI Rank Lab AEO Market Report 2026",
+              },
+              why: {
+                heading:"AI is reshaping B2B discovery",
+                body:"Buyers are using AI to build shortlists before they speak to sales. Visibility in those answers is the new first impression.",
+                accent:"#8FFFDB", rgb:"143,255,219",
+                bullets:[
+                  ["AI search is the new B2B discovery layer","Buyers ask LLMs who to call before they ever speak to sales."],
+                  ["Citation = zero-cost inbound influence","Unprompted AI answers are unbranded reach at no marginal cost."],
+                  ["AI answers are now the default search experience","40–60% of searches trigger AI answers — buyers are already bypassing traditional results."],
+                ],
+              },
+              opp: {
+                heading:"Strong returns. Most peers still watching.",
+                body:"Early AEO movers are already seeing measurable commercial returns. Most ServiceNow peers haven't started yet.",
+                accent:"#C0A6FF", rgb:"192,166,255",
+                stats:[
+                  ["67%",   "of adopters report improved unaided brand awareness in their target market."],
+                  ["2–3×",  "higher engagement from AI-referred visitors — qualified, intent-driven traffic."],
+                  ["~25%",  "mid-market B2B AEO adoption rate as of 2026."],
+                ],
+                source:"AI Rank Lab AEO Market Report 2026",
+              },
+            };
+            const p = panels[tab];
+            return (
+              <div className="rounded-[28px] border border-white/10 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] ring-1 ring-white/5 backdrop-blur-xl"
+                style={{backgroundColor:`rgba(${p.rgb},0.07)`}}>
+
+                {/* Tab bar */}
+                <div className="flex border-b border-white/8">
+                  {tabs.map(({id,accent,rgb,label})=>{
+                    const active = tab===id;
+                    return (
+                      <button key={id} onClick={()=>setTab(id)}
+                        className="relative flex-1 px-4 py-4 text-[12px] font-bold uppercase tracking-[0.2em] transition-all duration-150"
+                        style={{color:active?accent:"rgba(255,255,255,0.55)",backgroundColor:active?`rgba(${rgb},0.09)`:"transparent"}}>
+                        {label}
+                        {active && <span className="absolute bottom-0 inset-x-0 h-[3px] rounded-t-full" style={{backgroundColor:accent}}/>}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Content panel */}
+                <div className="px-8 py-8 md:px-10">
+                  <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
+
+                    {/* Left — heading + body */}
+                    <div>
+                      <h3 className="text-[1.55rem] font-bold text-white leading-tight">{p.heading}</h3>
+                      <p className="mt-3 text-[13px] leading-6 text-white/60">{p.body}</p>
+                      {p.source && <div className="mt-6 text-[9px] text-white/25">Source: {p.source}</div>}
+                    </div>
+
+                    {/* Right — stats or bullets */}
+                    <div className="grid gap-5 sm:grid-cols-3">
+                      {p.stats && p.stats.map(([s,d])=>(
+                        <div key={s} className="rounded-[16px] border px-5 py-4" style={{borderColor:`rgba(${p.rgb},0.32)`,backgroundColor:`rgba(${p.rgb},0.10)`}}>
+                          <div className="text-[2rem] font-bold leading-none" style={{color:p.accent}}>{s}</div>
+                          <div className="mt-2 text-[12px] leading-5 text-white/60">{d}</div>
+                        </div>
+                      ))}
+                      {p.bullets && p.bullets.map(([t,d])=>(
+                        <div key={t} className="rounded-[16px] border px-5 py-4" style={{borderColor:`rgba(${p.rgb},0.32)`,backgroundColor:`rgba(${p.rgb},0.10)`}}>
+                          <div className="text-[13px] font-bold leading-snug" style={{color:p.accent}}>{t}</div>
+                          <div className="mt-2 text-[12px] leading-5 text-white/60">{d}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── SECTION 2: WHERE WE STAND (3-col) ── */}
+          <div className="grid gap-5 lg:grid-cols-3">
+
+            {/* Col 1 — Maturity pyramid */}
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] ring-1 ring-white/5 backdrop-blur-xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/35">Maturity position</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">Q4 FY25 → Q2 FY26</h2>
+
+              <p className="mt-1 text-[12px] leading-5 text-white/45">Moved from L1 Ad Hoc (score 1.8) to L3 Standardized through Q4 &amp; Q1 delivery. Q2 targets L4 — where citation drives inbound.</p>
+
+              {/* Pyramid SVG — maturity color range */}
+              <div className="mt-4 w-full">
+                <svg viewBox="0 0 380 345" width="100%" height="auto">
+                  <defs>
+                    {[
+                      {id:"glowL5",color:"143,255,219"},
+                      {id:"glowL4",color:"113,241,247"},
+                      {id:"glowL3",color:"44,176,205"},
+                      {id:"glowL2",color:"192,166,255"},
+                      {id:"glowL1",color:"246,82,117"},
+                    ].map(({id,color})=>(
+                      <filter key={id} id={id} x="-40%" y="-40%" width="180%" height="180%">
+                        <feGaussianBlur stdDeviation="4" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>
+                    ))}
+                  </defs>
+                  {[
+                    {level:"L5", model:"Authority",  name:"Best-in-Class", state:"future",  pts:"72,68 158,68 115,2",            ly:10,  cx:115, cy:52,  rx:158, color:"#8FFFDB", rgb:"143,255,219", filterId:"glowL5" },
+                    {level:"L4", model:"Pillar",     name:"Advanced",      state:"target",  pts:"72,70 158,70 171,134 59,134",   ly:77,  cx:115, cy:102, rx:171, color:"#71F1F7", rgb:"113,241,247", filterId:"glowL4", badge:"Q2" },
+                    {level:"L3", model:"Structure",  name:"Standardized",  state:"current", pts:"59,136 171,136 184,200 46,200", ly:143, cx:115, cy:168, rx:184, color:"#2CB0CD", rgb:"44,176,205",  filterId:"glowL3", badge:"Now" },
+                    {level:"L2", model:"Answers",    name:"Developing",    state:"done",    pts:"46,202 184,202 197,266 33,266", ly:209, cx:115, cy:234, rx:197, color:"#C0A6FF", rgb:"192,166,255",  filterId:"glowL2", badge:"Q4" },
+                    {level:"L1", model:"Keywords",   name:"Ad Hoc",        state:"past",    pts:"33,268 197,268 210,332 20,332", ly:275, cx:115, cy:300, rx:210, color:"#F65275", rgb:"246,82,117",  filterId:"glowL1" },
+                  ].map(({level,model,name,state,pts,ly,cx,cy,rx,color,rgb,filterId,badge})=>{
+                    const fillOp   = state==="future"?0.55:state==="target"?0.30:state==="current"?0.42:state==="done"?0.22:0.18;
+                    const strokeOp = state==="future"?0.95:state==="target"?0.75:state==="current"?0.95:state==="done"?0.55:0.45;
+                    const labelFill= state==="future"?0.22:state==="target"?0.14:state==="current"?0.22:state==="done"?0.10:0.08;
+                    const labelStr = state==="future"?0.70:state==="target"?0.55:state==="current"?0.70:state==="done"?0.35:0.28;
+                    const nameOp   = state==="future"?1.0:state==="target"?0.90:state==="current"?1.0:state==="done"?0.75:0.65;
+                    const subOp    = state==="future"?0.80:state==="target"?0.72:state==="current"?0.82:state==="done"?0.58:0.48;
+                    const sw       = state==="current"||state==="future"?"2":"1.2";
+                    return (
+                    <g key={level}>
+                      <polygon points={pts}
+                        fill={`rgba(${rgb},${fillOp})`}
+                        stroke={`rgba(${rgb},${strokeOp})`}
+                        strokeWidth={sw}
+                        filter={state==="current"||state==="future"?`url(#${filterId})`:undefined}
+                      />
+                      <text x={cx} y={cy} fontSize="12" fontWeight="900" textAnchor="middle" dominantBaseline="middle"
+                        fill="rgba(255,255,255,0.92)" fontFamily="sans-serif">{level}</text>
+                      <rect x="222" y={ly} width="155" height="50" rx="7"
+                        fill={`rgba(${rgb},${labelFill})`}
+                        stroke={`rgba(${rgb},${labelStr})`}
+                        strokeWidth={state==="current"||state==="future"?"1.5":"1"}
+                      />
+                      <text x="233" y={ly+18} fontSize={state==="current"?"10":"9"} fontWeight="800"
+                        fill={`rgba(${rgb},${nameOp})`}
+                        fontFamily="sans-serif">{name}{badge?` · ${badge}`:""}</text>
+                      <text x="233" y={ly+34} fontSize="8"
+                        fill={`rgba(${rgb},${subOp})`}
+                        fontFamily="sans-serif">{model}{state==="current"?"  ▶ you are here":""}</text>
+                    </g>
+                  );})}
+
+                  {/* Left arrow → pointing RIGHT toward L3 */}
+                  <g filter="url(#glowL3)">
+                    <text x="4" y="158" fontSize="7" fontWeight="800" fill="rgba(44,176,205,0.85)" fontFamily="sans-serif">NOW</text>
+                    <line x1="6" y1="168" x2="38" y2="168" stroke="rgba(44,176,205,0.80)" strokeWidth="1.5" strokeDasharray="3,2"/>
+                    <polygon points="46,168 34,162 34,174" fill="rgba(44,176,205,0.95)"/>
+                  </g>
+
+                  {/* Connector lines pyramid → label boxes */}
+                  {[
+                    {rx:158,y:52, ly:10,  rgb:"143,255,219",s:"future"},
+                    {rx:171,y:102,ly:77,  rgb:"113,241,247",s:"target"},
+                    {rx:184,y:168,ly:143, rgb:"44,176,205", s:"current"},
+                    {rx:197,y:234,ly:209, rgb:"192,166,255",s:"done"},
+                    {rx:210,y:300,ly:275, rgb:"246,82,117", s:"past"},
+                  ].map(({rx,y,ly,rgb,s},i)=>{
+                    const mid = ly+25;
+                    const op = s==="current"||s==="future"?0.45:s==="target"?0.30:s==="done"?0.22:0.16;
+                    return (
+                      <line key={i} x1={rx} y1={y} x2="222" y2={mid}
+                        stroke={`rgba(${rgb},${op})`}
+                        strokeWidth="1" strokeDasharray="2,3"/>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+
+            {/* Col 2 — Platform ranks */}
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] ring-1 ring-white/5 backdrop-blur-xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/35">Peer group benchmark</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">AI platform ranks</h2>
+              <p className="mt-1 text-[12px] leading-5 text-white/45">8 direct ServiceNow peers · Mar 2026</p>
+
+              <div className="mt-5 space-y-2.5">
+                {[
+                  { platform:"ChatGPT",    rank:"#1", score:48, max:48, status:"Leads", sc:"text-[#8FFFDB]", dot:"bg-[#8FFFDB]", barBg:"linear-gradient(to right,#2CB0CD,#71F1F7,#8FFFDB)", border:"border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.05]", note:"Highest in peer group" },
+                  { platform:"Gemini",     rank:"#1", score:49, max:49, status:"Leads", sc:"text-[#8FFFDB]", dot:"bg-[#8FFFDB]", barBg:"linear-gradient(to right,#2CB0CD,#71F1F7,#8FFFDB)", border:"border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.05]", note:"Highest in peer group" },
+                  { platform:"Perplexity", rank:"#5", score:57, max:67, status:"Gap",   sc:"text-[#F65275]", dot:"bg-[#F65275]", barBg:"linear-gradient(to right,#F65275,#2CB0CD,#71F1F7)", border:"border-[#F65275]/16 bg-[#F65275]/[0.04]", note:"UP3 leads at 67" },
+                ].map(({platform,rank,score,max,status,sc,dot,barBg,border,note})=>(
+                  <div key={platform} className={`rounded-[16px] border ${border} px-4 py-3.5`}>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className={`h-1.5 w-1.5 rounded-full ${dot}`}/>
+                        <span className="text-[13px] font-bold text-white">{platform}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-[0.14em] ${sc}`}>{status}</span>
+                        <span className={`text-[1.5rem] font-bold leading-none ${sc}`}>{rank}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex-1 h-1 overflow-hidden rounded-full bg-white/8">
+                        <div className="h-full rounded-full" style={{width:`${(score/max)*100}%`,background:barBg}}/>
+                      </div>
+                      <span className="text-[11px] text-white/40">{note}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-[16px] border border-[#71F1F7]/12 bg-[#71F1F7]/[0.03] px-4 py-3">
+                <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#71F1F7]/60 mb-1">Market leaders · for reference</div>
+                <p className="text-[12px] leading-5 text-white/48">Deloitte leads at 82. Gap of 34 points — market ceiling, not a direct peer comparison.</p>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <span className="text-[10px] text-white/22">★</span>
+                <span className="text-[10px] text-white/22">Source: HubSpot AEO Grader · 7 Mar 2026 · ServiceNow Implementation</span>
+              </div>
+            </div>
+
+            {/* Col 3 — GTM action */}
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] ring-1 ring-white/5 backdrop-blur-xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/35">GTM · Inbound motion</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">What this means for pipeline</h2>
+              <p className="mt-1 text-[12px] leading-5 text-white/45">Structure in place. Q2 is where Crossfuze moves from being findable to being the answer buyers get.</p>
+
+              <div className="mt-5 space-y-2.5">
+                {[
+                  { icon:"✓", color:"text-[#8FFFDB]", border:"border-[#8FFFDB]/12 bg-[#8FFFDB]/[0.04]", label:"Q1 complete", val:"Technical foundation, schema, and crawlability resolved. AI engines can now find and read Crossfuze.", sub:null },
+                  { icon:"→", color:"text-[#71F1F7]", border:"border-[#71F1F7]/16 bg-[#71F1F7]/[0.07] ring-1 ring-[#71F1F7]/8", label:"Q2 priority", val:"Building the proof layer that earns citation — expert voices and case studies are what turn visibility into being named.", sub:"Active now" },
+                  { icon:"↑", color:"text-[#8FFFDB]", border:"border-[#8FFFDB]/12 bg-[#8FFFDB]/[0.04]", label:"L4 outcome",   val:"Cited by name when buyers ask AI which ServiceNow partner to use — where visibility becomes inbound.", sub:"Q2 target" },
+                ].map(({icon,color,border,label,val,sub})=>(
+                  <div key={label} className={`rounded-[14px] border ${border} px-4 py-3.5`}>
+                    <div className="flex items-start gap-3">
+                      <span className={`mt-0.5 text-[13px] font-bold shrink-0 ${color}`}>{icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className={`text-[10px] font-bold uppercase tracking-[0.14em] ${color} opacity-70`}>{label}</span>
+                          {sub&&<span className={`text-[8px] font-bold uppercase tracking-[0.1em] rounded-full px-2 py-0.5 border ${color} border-current opacity-50`}>{sub}</span>}
+                        </div>
+                        <p className="mt-1 text-[12px] leading-5 text-white/65">{val}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* ── SECTION: INDUSTRY vs CROSSFUZE ── */}
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+
+            {/* Left — Investment areas mapped to Crossfuze */}
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] ring-1 ring-white/5 backdrop-blur-xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/35">Industry · 2026</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">Where Crossfuze maps to market investment</h2>
+              <p className="mt-1 text-[12px] leading-5 text-white/40">Forward-looking AEO programmes in 2026 are investing in five areas. Here's where we stand against each.</p>
+              <div className="mt-5 space-y-2.5">
+                {[
+                  { status:"✓", sc:"text-[#8FFFDB]", bc:"border-[#8FFFDB]/12 bg-[#8FFFDB]/[0.04]", area:"Schema automation",          cf:"Technical foundation + schema markup completed Q1.",             badge:"Done",   bbc:"border-[#8FFFDB]/20 bg-[#8FFFDB]/[0.07] text-[#8FFFDB]" },
+                  { status:"✓", sc:"text-[#8FFFDB]", bc:"border-[#8FFFDB]/12 bg-[#8FFFDB]/[0.04]", area:"AI citation monitoring",     cf:"Project Lighthouse — tracking ChatGPT, Gemini, Perplexity.",    badge:"Live",   bbc:"border-[#8FFFDB]/20 bg-[#8FFFDB]/[0.07] text-[#8FFFDB]" },
+                  { status:"→", sc:"text-[#71F1F7]", bc:"border-[#71F1F7]/16 bg-[#71F1F7]/[0.06] ring-1 ring-[#71F1F7]/8", area:"Author authority programme", cf:"Passle SME relaunch — structured expert content at scale.", badge:"Q2",    bbc:"border-[#71F1F7]/20 bg-[#71F1F7]/[0.07] text-[#71F1F7]" },
+                  { status:"→", sc:"text-[#71F1F7]", bc:"border-[#71F1F7]/16 bg-[#71F1F7]/[0.06] ring-1 ring-[#71F1F7]/8", area:"AI content auditing",        cf:"Quarterly audit of how AI engines describe Crossfuze.",         badge:"Q2",    bbc:"border-[#71F1F7]/20 bg-[#71F1F7]/[0.07] text-[#71F1F7]" },
+                  { status:"○", sc:"text-[#C0A6FF]", bc:"border-[#C0A6FF]/10 bg-[#C0A6FF]/[0.03]", area:"Original research programme", cf:"Proprietary data + surveys — highest-value citation content.",   badge:"Gap",   bbc:"border-[#C0A6FF]/20 bg-[#C0A6FF]/[0.06] text-[#C0A6FF]" },
+                ].map(({status,sc,bc,area,cf,badge,bbc})=>(
+                  <div key={area} className={`rounded-[14px] border px-4 py-3 flex items-start gap-3 ${bc}`}>
+                    <span className={`mt-0.5 text-[12px] font-bold shrink-0 ${sc}`}>{status}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[12.5px] font-bold text-white/80">{area}</span>
+                        <span className={`shrink-0 text-[8px] font-bold uppercase tracking-[0.14em] rounded-full border px-2 py-0.5 ${bbc}`}>{badge}</span>
+                      </div>
+                      <p className="mt-0.5 text-[11px] leading-4 text-white/40">{cf}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 text-[9px] text-white/18">Source: AI Rank Lab AEO Market Report 2026</div>
+            </div>
+
+            {/* Right — Bold predictions framed for Crossfuze */}
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] ring-1 ring-white/5 backdrop-blur-xl flex flex-col">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/35">2027 horizon</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">What's coming — and why it compounds</h2>
+              <p className="mt-1 text-[12px] leading-5 text-white/40">Brands investing seriously in AEO now are securing positions that will compound in value as AI search penetration accelerates.</p>
+              <div className="mt-5 space-y-3 flex-1">
+                {[
+                  { c:"text-[#71F1F7]", cc:"#71F1F7", bc:"border-[#71F1F7]/12 bg-[#71F1F7]/[0.04]",
+                    title:"Agentic AI reshapes the funnel",
+                    body:"AI assistants will complete purchase research autonomously. Brands cited as trusted sources capture outsized commercial value — the shortlist is set before a human is involved.",
+                    svg:<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11l-5.5 6M12 11l5.5 6"/><path d="M9 12H6M18 12h-3"/></svg>
+                  },
+                  { c:"text-[#8FFFDB]", cc:"#8FFFDB", bc:"border-[#8FFFDB]/12 bg-[#8FFFDB]/[0.04]",
+                    title:"AEO ROI measurement standardises",
+                    body:"AI Share of Voice becomes a standard marketing KPI alongside organic share of voice. Crossfuze's Lighthouse tracking positions us ahead of this shift.",
+                    svg:<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/><path d="M3 6l5-3 5 4 5-4"/></svg>
+                  },
+                  { c:"text-[#C0A6FF]", cc:"#C0A6FF", bc:"border-[#C0A6FF]/12 bg-[#C0A6FF]/[0.04]",
+                    title:"Paid AI search becomes a $5B+ channel",
+                    body:"Organic citation authority built now is a hedge against rising paid AI search costs — the same compounding dynamic as early Google organic vs. Ads.",
+                    svg:<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v2M12 16v2"/><path d="M9 9.5a3 3 0 015 2.2c0 1.6-1.4 2.8-3 2.8s-3 1.2-3 2.8a3 3 0 005 2.2"/></svg>
+                  },
+                ].map(({c,cc,bc,title,body,svg})=>(
+                  <div key={title} className={`rounded-[14px] border px-4 py-3.5 ${bc}`}>
+                    <div className="flex items-start gap-3">
+                      <div className="shrink-0 mt-0.5 w-8 h-8 rounded-[8px] flex items-center justify-center" style={{backgroundColor:`${cc}18`}}>
+                        <span style={{color:cc}}>{svg}</span>
+                      </div>
+                      <div>
+                        <div className={`text-[12.5px] font-bold ${c}`}>{title}</div>
+                        <p className="mt-1 text-[11px] leading-5 text-white/45">{body}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* ── SECTION 3: THE GAP + THE PLAN ── */}
+          <div className="grid gap-5 lg:grid-cols-[1.25fr_0.75fr]">
+
+            {/* Left — Authority gap */}
+            <div className="rounded-[28px] border-2 border-[#F65275]/55 bg-[linear-gradient(135deg,rgba(246,82,117,0.09),rgba(246,82,117,0.03),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(246,82,117,0.12)] ring-1 ring-[#F65275]/20 backdrop-blur-xl">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#F65275]/70">The authority gap</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">Authority is the remaining unlock.</h2>
+              <p className="mt-2.5 text-[13px] leading-6 text-white/58">Technical structure is resolved. AI engines can find and read Crossfuze. What's missing is the trust layer — <span className="font-bold text-white/88">consistent citation as an authoritative answer</span>. That requires proof signals: expert voices, case studies, and third-party validation.</p>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {[
+                  { dim:"Technical",   score:3.5, max:5, barStart:"#8FFFDB", barMid:"#71F1F7", barEnd:"#2CB0CD", tc:"text-[#8FFFDB]", tag:"✓ Done",         border:"border-[#8FFFDB]/16 bg-[#8FFFDB]/[0.04]" },
+                  { dim:"Content",     score:2.8, max:5, barStart:"#71F1F7", barMid:"#8FFFDB", barEnd:"#2CB0CD",    tc:"text-[#71F1F7]", tag:"Q2 Active",      border:"border-[#71F1F7]/16 bg-[#71F1F7]/[0.04]" },
+                  { dim:"Authority",   score:2.6, max:5, barStart:"#F65275", barMid:"#2CB0CD", barEnd:"#71F1F7",    tc:"text-[#F65275]", tag:"⚠ Priority gap", border:"border-[#F65275]/16 bg-[#F65275]/[0.07]" },
+                  { dim:"Measurement", score:2.5, max:5, barStart:"#F65275", barMid:"#2CB0CD", barEnd:"#71F1F7",    tc:"text-[#2CB0CD]", tag:"Q2 Quick win",   border:"border-[#2CB0CD]/16 bg-[#2CB0CD]/[0.04]" },
+                ].map(({dim,score,max,barStart,barMid,barEnd,tc,tag,border})=>(
+                  <div key={dim} className={`flex flex-col gap-2.5 rounded-[14px] border ${border} px-4 py-3.5`}>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-[12px] font-bold text-white/70">{dim}</div>
+                      <div className={`text-[1.4rem] font-bold leading-none ${tc}`}>{score}</div>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-white/8">
+                      <div className="h-full rounded-full" style={{width:`${(score/max)*100}%`,background:barMid?`linear-gradient(to right,${barStart},${barMid},${barEnd})`:`linear-gradient(to right,${barStart},${barEnd})`}}/>
+                    </div>
+                    <div className={`text-[9px] font-bold uppercase tracking-[0.12em] ${tc}`}>{tag}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 rounded-[18px] border-2 border-[#F65275]/22 bg-[#F65275]/[0.06] px-5 py-4">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#F65275]/15">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#F65275" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-white">Passle SME programme</div>
+                      <div className="text-[11px] text-[#F65275]/75">Primary lever to close the Authority gap</div>
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-[#F65275]/25 bg-[#F65275]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#F65275]">Q2 Relaunch</span>
+                </div>
+                <p className="mt-3 text-[12px] leading-5 text-white/55 border-t border-[#F65275]/10 pt-3">Proven in trial. Relaunching Q2 as the structured vehicle for SME content at scale — exactly what AI engines reward when selecting who to cite.</p>
+              </div>
+            </div>
+
+            {/* Right — Q2 priorities with outcomes */}
+            <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.18)] ring-1 ring-white/5 backdrop-blur-xl flex flex-col">
+              <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/35">Q2 priorities</div>
+              <h2 className="mt-2 text-[1.55rem] font-bold text-white leading-tight">Four moves to close the gap.</h2>
+              <p className="mt-1 text-[12px] leading-5 text-white/40">Each priority is tied to a specific dimension gap and a measurable outcome.</p>
+              <div className="mt-4 space-y-2.5 flex-1">
+                {[
+                  { n:"1", t:"FAQ schema + answer content",         outcome:"Increases Content score — AI engines surface structured answers.",        q:"Q2",    tc:"text-[#71F1F7]", qc:"border-[#71F1F7]/25 bg-[#71F1F7]/[0.06] text-[#71F1F7]", bc:"border-[#71F1F7]/30 bg-[#71F1F7]/[0.05]" },
+                  { n:"2", t:"Passle SME programme relaunch",       outcome:"Primary Authority lever — expert voices AI engines reward and cite.",       q:"Q2",    tc:"text-[#F65275]", qc:"border-[#F65275]/25 bg-[#F65275]/[0.06] text-[#F65275]", bc:"border-[#F65275]/30 bg-[#F65275]/[0.05]" },
+                  { n:"3", t:"Authority signals — proof + experts", outcome:"Case studies + third-party validation to build trust layer at scale.",     q:"Q2–Q3", tc:"text-[#F65275]", qc:"border-[#F65275]/25 bg-[#F65275]/[0.06] text-[#F65275]", bc:"border-[#F65275]/30 bg-[#F65275]/[0.05]" },
+                  { n:"4", t:"Citation tracking + measurement",     outcome:"Closes Measurement gap — AI Share of Voice tracked per quarter.",         q:"Q2+",   tc:"text-[#2CB0CD]", qc:"border-[#2CB0CD]/25 bg-[#2CB0CD]/[0.06] text-[#2CB0CD]", bc:"border-[#2CB0CD]/30 bg-[#2CB0CD]/[0.05]" },
+                ].map(({n,t,outcome,q,tc,qc,bc})=>(
+                  <div key={n} className={`rounded-[14px] border px-4 py-3 ${bc}`}>
+                    <div className="flex items-center gap-3">
+                      <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[11px] font-bold ${tc}`}>{n}</span>
+                      <span className="flex-1 text-[12.5px] font-bold text-white/80">{t}</span>
+                      <span className={`shrink-0 inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] ${qc}`}>{q}</span>
+                    </div>
+                    <p className="mt-1.5 ml-9 text-[11px] leading-4 text-white/38">{outcome}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/8">
+                <div className="rounded-[14px] border border-white/8 bg-white/[0.02] px-4 py-3 text-center">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/25">Target outcome</div>
+                  <div className="mt-1 text-[13px] font-bold text-white/70">L4 Advanced by Q3 · Consistent AI citation as the leading ServiceNow partner</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── SECTION 4: FOOTER CTA ── */}
+          <div className="rounded-[22px] border border-white/10 bg-white/[0.03] px-6 py-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.26em] text-white/30">Explore the full detail</div>
+                <div className="mt-1 text-sm text-white/50">Each tab provides the working data and evidence behind this summary.</div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[["Maturity Framework","overview"],["Maturity Score","framework"],["Competitive Benchmark","benchmark"],["Action Plan","actions"]].map(([label,target])=>(
+                  <button key={target} onClick={()=>setPage(target)} className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[12px] font-semibold text-white/60 transition hover:border-[#71F1F7]/28 hover:bg-[#71F1F7]/8 hover:text-[#71F1F7]">{label} →</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      );
+
+      const CurrentView = page==="exec"?<ExecSummaryView/>:page==="overview"?<OverviewView/>:page==="framework"?<FrameworkView/>:page==="actions"?<ActionsView/>:<BenchmarkView/>;
+
+      return (
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(113,241,247,0.055),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(143,255,219,0.04),transparent_22%),#040E3D] px-4 py-5 text-white md:px-7 md:py-6 xl:px-12">
+          <div className="mx-auto max-w-7xl">
+            <Header/>
+            {page !== "exec" && <SignalBar/>}
+            <div className="mt-6">{CurrentView}</div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+  </script>
+</body>
+</html>
