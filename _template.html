@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#040E3D">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Page Title · Crossfuze Lighthouse</title>
+
+  <!-- ① Shared brand styles -->
+  <link rel="stylesheet" href="lighthouse-brand.css"/>
+
+  <!-- ② Tailwind (utility classes) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={corePlugins:{preflight:false}}</script>
+
+  <!-- ③ React -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* Page-specific overrides go here */
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- ④ Shared shell (nav, signal bar, data hook) -->
+  <script src="lighthouse-shell.js"></script>
+
+  <!-- ⑤ Page script -->
+  <script type="text/babel">
+    const { useState } = React;
+    const { LighthouseShell, useLighthouseData, BRAND } = LighthouseShellLib;
+
+    /* ── DATA ─────────────────────────────────────────────────────
+       Point to your JSON file in the GitHub repo.
+       The rd() helper reads any value from the JSON by dot-path.
+       Falls back to the hardcoded value if fetch fails.
+    ──────────────────────────────────────────────────────────────── */
+    const DATA_URL = "https://raw.githubusercontent.com/crossfuze-lighthouse/ZOOM/main/aeo-data.json";
+
+    /* ── NAV PAGES ────────────────────────────────────────────────
+       Add or remove tabs here. id matches what onNavigate receives.
+    ──────────────────────────────────────────────────────────────── */
+    const NAV_PAGES = [
+      { id:"exec",      label:"Exec Summary" },
+      { id:"overview",  label:"Maturity Framework" },
+      { id:"framework", label:"Maturity Score" },
+      { id:"benchmark", label:"Competitive Benchmark" },
+      { id:"actions",   label:"Action Plan" },
+    ];
+
+    /* ── SIGNAL BAR PILLS ────────────────────────────────────────
+       Update values here or wire to rd() once JSON is loaded.
+    ──────────────────────────────────────────────────────────────── */
+    const SIGNALS = [
+      { dot: BRAND.green,  label:"AEO Score",   val:"2.8 · L3 Standardized", vc: BRAND.green },
+      { dot: BRAND.green,  label:"ChatGPT",     val:"#1 of 8 peers",          vc: BRAND.green },
+      { dot: BRAND.green,  label:"Gemini",      val:"#1 of 8 peers",          vc: BRAND.green },
+      { dot: BRAND.red,    label:"Perplexity",  val:"#5 of 8 peers",          vc: BRAND.red   },
+      { dot: BRAND.red,    label:"Market gap",  val:"−34 pts to Deloitte",    vc: BRAND.red   },
+      { dot: BRAND.red,    label:"Q2 priority", val:"Authority + Passle",      vc: BRAND.red   },
+    ];
+
+    /* ── APP ──────────────────────────────────────────────────────
+       Replace the content inside LighthouseShell with your page.
+    ──────────────────────────────────────────────────────────────── */
+    function App() {
+      const [page, setPage] = useState("exec");
+      const { rd, status } = useLighthouseData(DATA_URL);
+
+      // Example: read a value from JSON with fallback
+      // const score = rd("maturity.compositeScore", 2.8);
+
+      return (
+        <LighthouseShell
+          currentPage={page}
+          onNavigate={setPage}
+          pages={NAV_PAGES}
+          signals={SIGNALS}
+          updatedLabel={rd("meta.quarter", "Q1 FY26")}
+          dataStatus={status}
+          showSignalBar={page !== "exec"}
+          lighthouseUrl="https://crossfuze-lighthouse.github.io/ZOOM/"
+        >
+
+          {/* ════════════════════════════════════════════════════
+              YOUR PAGE CONTENT GOES HERE
+              Use cx-card, cx-hero-heading, cx-eyebrow, cx-body
+              and BRAND.* colour values for consistency.
+
+              Example:
+              <div className="cx-fade-in space-y-6">
+                <div className="cx-card">
+                  <div className="cx-eyebrow">Section label</div>
+                  <h2 className="cx-section-heading mt-2">Heading</h2>
+                  <p className="cx-body mt-3">Body text here.</p>
+                </div>
+              </div>
+          ═══════════════════════════════════════════════════════ */}
+
+          <div className="cx-fade-in flex items-center justify-center" style={{ minHeight:400 }}>
+            <div className="text-center">
+              <div className="cx-eyebrow mb-3">Template</div>
+              <h1 className="cx-hero-heading" style={{ fontSize:"2rem" }}>Your page content here</h1>
+              <p className="cx-body mt-3">Replace this section in _template.html</p>
+              <div className="mt-6 cx-card" style={{ display:"inline-block", padding:"12px 24px" }}>
+                <span style={{ color: BRAND.teal, fontWeight:700 }}>Data status: {status}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ════════════════════════════════════════════════════ */}
+
+        </LighthouseShell>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+  </script>
+</body>
+</html>

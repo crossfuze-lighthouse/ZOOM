@@ -1,0 +1,216 @@
+/* ============================================================
+   CROSSFUZE LIGHTHOUSE — SHARED BRAND STYLES
+   lighthouse-brand.css
+   Version: 1.0 · March 2026
+   ============================================================
+   Usage: <link rel="stylesheet" href="lighthouse-brand.css">
+   ============================================================ */
+
+/* ── FONTS ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap');
+
+/* ── BRAND TOKENS ───────────────────────────────────────────── */
+:root {
+  /* Core palette */
+  --cx-midnight:      #040E3D;
+  --cx-green:         #8FFFDB;
+  --cx-teal:          #71F1F7;
+  --cx-utility-blue:  #2CB0CD;
+  --cx-purple:        #6400EC;
+  --cx-lavender:      #C0A6FF;
+  --cx-red:           #F65275;
+  --cx-crisp-grey:    #F2F2F4;
+
+  /* Maturity level colours */
+  --cx-l1: #F65275;   /* Ad Hoc       — pink  */
+  --cx-l2: #C0A6FF;   /* Developing   — lavender */
+  --cx-l3: #2CB0CD;   /* Standardized — utility blue */
+  --cx-l4: #71F1F7;   /* Advanced     — teal  */
+  --cx-l5: #8FFFDB;   /* Best-In-Class — green */
+
+  /* Semantic roles */
+  --cx-done:     var(--cx-green);
+  --cx-active:   var(--cx-teal);
+  --cx-gap:      var(--cx-red);
+  --cx-target:   var(--cx-green);
+  --cx-authority: var(--cx-red);
+
+  /* Standard progress bar gradient */
+  --cx-bar-gradient: linear-gradient(to right, #F65275 0%, #F65275 8%, #2CB0CD 30%, #71F1F7 65%, #8FFFDB 100%);
+  --cx-bar-achievement: linear-gradient(to right, #8FFFDB, #71F1F7, #2CB0CD);
+  --cx-bar-gap:         linear-gradient(to right, #F65275, #2CB0CD, #71F1F7);
+
+  /* Typography */
+  --cx-font:      'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif;
+
+  /* Spacing */
+  --cx-radius-card:  28px;
+  --cx-radius-inner: 18px;
+  --cx-radius-pill:  999px;
+
+  /* Shadows */
+  --cx-shadow-card:  0 20px 50px rgba(0,0,0,0.2);
+  --cx-shadow-hero:  0 32px 80px rgba(0,0,0,0.42);
+}
+
+/* ── RESET & BASE ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--cx-midnight) !important;
+  color: var(--cx-crisp-grey);
+  font-family: var(--cx-font);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100%;
+}
+
+/* ── PAGE BACKGROUND ────────────────────────────────────────── */
+.cx-page-bg {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left,  rgba(113,241,247,0.055), transparent 18%),
+    radial-gradient(circle at bottom right, rgba(143,255,219,0.04), transparent 22%),
+    var(--cx-midnight);
+  padding: 20px 16px;
+}
+@media (min-width: 768px)  { .cx-page-bg { padding: 24px 28px; } }
+@media (min-width: 1280px) { .cx-page-bg { padding: 24px 48px; } }
+
+/* ── CARD SHELLS ────────────────────────────────────────────── */
+.cx-card {
+  border-radius: var(--cx-radius-card);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  padding: 24px;
+  box-shadow: var(--cx-shadow-card);
+  backdrop-filter: blur(16px);
+}
+.cx-card-hero {
+  border-radius: 32px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(ellipse at top right, rgba(113,241,247,0.08), transparent 48%),
+    radial-gradient(ellipse at bottom left, rgba(143,255,219,0.05), transparent 42%),
+    linear-gradient(135deg, rgba(12,32,100,0.70), rgba(8,16,58,0.94));
+  box-shadow: var(--cx-shadow-hero);
+  backdrop-filter: blur(16px);
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────────── */
+.cx-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(242,242,244,0.45);
+}
+.cx-section-heading {
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+.cx-hero-heading {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.cx-body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(242,242,244,0.62);
+}
+
+/* ── PILLS & BADGES ─────────────────────────────────────────── */
+.cx-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--cx-radius-pill);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.cx-pill--teal   { border-color: rgba(113,241,247,0.28); background: rgba(113,241,247,0.08); color: var(--cx-teal); }
+.cx-pill--green  { border-color: rgba(143,255,219,0.28); background: rgba(143,255,219,0.08); color: var(--cx-green); }
+.cx-pill--red    { border-color: rgba(246,82,117,0.28);  background: rgba(246,82,117,0.08);  color: var(--cx-red); }
+.cx-pill--blue   { border-color: rgba(44,176,205,0.28);  background: rgba(44,176,205,0.08);  color: var(--cx-utility-blue); }
+.cx-pill--lav    { border-color: rgba(192,166,255,0.28); background: rgba(192,166,255,0.08); color: var(--cx-lavender); }
+
+/* ── PROGRESS BARS ──────────────────────────────────────────── */
+.cx-bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+.cx-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--cx-bar-gradient);
+}
+.cx-bar-fill--achievement { background: var(--cx-bar-achievement); }
+.cx-bar-fill--gap         { background: var(--cx-bar-gap); }
+
+/* ── SIGNAL BAR ─────────────────────────────────────────────── */
+.cx-signal-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(113,241,247,0.20);
+  background: rgba(113,241,247,0.03);
+  padding: 12px 20px;
+  margin-bottom: 28px;
+  backdrop-filter: blur(8px);
+}
+.cx-signal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* ── NAV ────────────────────────────────────────────────────── */
+.cx-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.cx-nav-btn:hover  { border-color: rgba(113,241,247,0.30); color: var(--cx-teal); background: rgba(113,241,247,0.05); }
+.cx-nav-btn--active { border-color: rgba(255,255,255,0.35); color: #fff; background: rgba(255,255,255,0.06); }
+.cx-nav-btn--lighthouse {
+  background: var(--cx-teal);
+  color: var(--cx-midnight);
+  border-color: var(--cx-teal);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(113,241,247,0.28);
+}
+.cx-nav-btn--lighthouse:hover { filter: brightness(1.06); color: var(--cx-midnight); }
+
+/* ── FADE IN ────────────────────────────────────────────────── */
+@keyframes cxFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.cx-fade-in { animation: cxFadeIn 0.22s ease both; }
+
+/* ── DIVIDER ────────────────────────────────────────────────── */
+.cx-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 0; }
