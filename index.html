@@ -13,7 +13,6 @@
   --teal:    #71F1F7;
   --green:   #8FFFDB;
   --red:     #F65275;
-  --amber:   #FFB347;
   --lav:     #C0A6FF;
   --util:    #2CB0CD;
   --main-bg: #F0F2F7;
@@ -113,7 +112,7 @@ html, body {
 /* Badges */
 .level-badge { display:inline-flex; align-items:center; font-size:10px; font-weight:600; padding:3px 9px; border-radius:999px; white-space:nowrap; }
 .l1 { background:rgba(246,82,117,0.14); color:var(--red);   border:1px solid rgba(246,82,117,0.30); }
-.l2 { background:rgba(255,179,71,0.12); color:var(--amber); border:1px solid rgba(255,179,71,0.30); }
+.l2 { background:rgba(192,166,255,0.12); color:var(--lav); border:1px solid rgba(192,166,255,0.28); }
 .l3 { background:rgba(143,255,219,0.10); color:var(--green); border:1px solid rgba(143,255,219,0.24); }
 .l4 { background:rgba(113,241,247,0.10); color:var(--teal);  border:1px solid rgba(113,241,247,0.24); }
 .l5 { background:rgba(192,166,255,0.10); color:var(--lav);   border:1px solid rgba(192,166,255,0.24); }
@@ -126,7 +125,7 @@ html, body {
 .bar-label { font-size:9px; color:rgba(255,255,255,0.28); margin-top:3px; }
 .gap-pill  { display:inline-block; font-size:10px; font-weight:600; padding:3px 8px; border-radius:999px; text-align:center; }
 .gap-aligned    { background:rgba(143,255,219,0.12); color:var(--green); border:1px solid rgba(143,255,219,0.22); }
-.gap-moderate   { background:rgba(255,179,71,0.12);  color:var(--amber); border:1px solid rgba(255,179,71,0.28); }
+.gap-moderate   { background:rgba(192,166,255,0.12);  color:var(--lav); border:1px solid rgba(192,166,255,0.26); }
 .gap-significant{ background:rgba(246,82,117,0.12);  color:var(--red);   border:1px solid rgba(246,82,117,0.22); }
 
 /* Dim tags */
@@ -136,14 +135,14 @@ html, body {
 .tag-de { background:rgba(192,166,255,0.10); color:var(--lav);   border:1px solid rgba(192,166,255,0.20); }
 
 /* Section label */
-.section-label { font-size:9px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:rgba(4,14,61,0.38); margin-bottom:8px; }
+.section-label { font-size:9px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:rgba(4,14,61,0.65); margin-bottom:8px; }
 
 /* Action rows */
 .action-row { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
 .action-row:last-child { border-bottom:none; }
 .action-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
 .action-high { background:var(--red); }
-.action-mid  { background:var(--amber); }
+.action-mid  { background:var(--lav); }
 .action-gap  { background:var(--green); }
 .action-title { font-size:12px; font-weight:600; color:rgba(255,255,255,0.90); }
 .action-desc  { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; }
@@ -160,7 +159,7 @@ html, body {
 .placeholder p  { font-size:13px; color:rgba(4,14,61,0.32); }
 
 /* Watermark */
-.demo-watermark { position:fixed; bottom:14px; right:18px; font-size:9px; color:rgba(4,14,61,0.28); letter-spacing:0.06em; pointer-events:none; z-index:999; }
+.demo-watermark { position:fixed; bottom:14px; right:18px; font-size:9px; color:rgba(4,14,61,0.40); letter-spacing:0.06em; pointer-events:none; z-index:999; }
 </style>
 </head>
 <body>
@@ -238,24 +237,8 @@ html, body {
       <h1 style="font-size:1.9rem;font-weight:600;letter-spacing:-0.04em;color:rgba(255,255,255,0.96);line-height:1.1;margin-bottom:7px;">Project Lighthouse</h1>
       <p style="font-size:13px;color:rgba(255,255,255,0.48);max-width:460px;line-height:1.6;">Central hub for Offering Maturity, Readiness and GTM Execution.</p>
     </div>
-    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;">
-      <div style="display:flex;align-items:center;gap:20px;">
-        <div style="text-align:right;">
-          <div style="font-size:1.8rem;font-weight:600;letter-spacing:-0.04em;color:#71F1F7;line-height:1;">L3</div>
-          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">AEO Level</div>
-        </div>
-        <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
-        <div style="text-align:right;">
-          <div style="font-size:1.8rem;font-weight:600;letter-spacing:-0.04em;color:#8FFFDB;line-height:1;">5</div>
-          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">Assessed</div>
-        </div>
-        <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
-        <div style="text-align:right;">
-          <div style="font-size:1.8rem;font-weight:600;letter-spacing:-0.04em;color:#F65275;line-height:1;">1</div>
-          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">Blocked</div>
-        </div>
-      </div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.18);text-align:right;">Q1 2026 · Demo data — illustrative only</div>
+    <div style="position:relative;z-index:1;flex-shrink:0;">
+      <div style="font-size:9px;color:rgba(255,255,255,0.22);text-align:right;letter-spacing:0.04em;">Q1 2026 · Demo data — illustrative only</div>
     </div>
   </div>
 
@@ -454,7 +437,7 @@ html, body {
         <div class="action-title">Published case study — min 1 (4.9) — SMART CSM</div>
         <div class="action-desc">L3 SA must-have · no published CSM case study yet</div>
       </div>
-      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(255,179,71,0.10);color:#FFB347;border:1px solid rgba(255,179,71,0.22);flex-shrink:0;">Must-have</span>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(192,166,255,0.10);color:#C0A6FF;border:1px solid rgba(192,166,255,0.22);flex-shrink:0;">Must-have</span>
     </div>
     <div class="action-row">
       <div class="action-dot action-mid"></div>
@@ -462,7 +445,7 @@ html, body {
         <div class="action-title">Win rate tracked by offering (4.17) — SMART ITSM</div>
         <div class="action-desc">L4 SA must-have · required before ITSM can claim L4</div>
       </div>
-      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(255,179,71,0.10);color:#FFB347;border:1px solid rgba(255,179,71,0.22);flex-shrink:0;">Must-have</span>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(192,166,255,0.10);color:#C0A6FF;border:1px solid rgba(192,166,255,0.22);flex-shrink:0;">Must-have</span>
     </div>
   </div>
 
