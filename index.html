@@ -1,263 +1,501 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background:#F0F2F7">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project Lighthouse | Crossfuze</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    :root {
-      --midnight: #040E3D;
-      --bright-green: #8FFFDB;
-      --bright-blue: #71F1F7;
-      --utility-blue: #2CB0CD;
-      --purple: #6400EC;
-      --lavender: #C0A6FF;
-      --callout-red: #F65275;
-      --crisp-grey: #F2F2F4;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Project Lighthouse | Crossfuze</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:    #040E3D;
+  --navy-2:  #071530;
+  --teal:    #71F1F7;
+  --green:   #8FFFDB;
+  --red:     #F65275;
+  --amber:   #FFB347;
+  --lav:     #C0A6FF;
+  --util:    #2CB0CD;
+  --main-bg: #F0F2F7;
+  --sidebar-w: 232px;
+  --topbar-h: 64px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--main-bg) !important;
+  color: rgba(255,255,255,0.9);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.fade-in { animation: fadeIn 0.3s ease forwards; }
 
-    body {
-      position: relative;
-      background:
-        radial-gradient(circle at top left, rgba(113, 241, 247, 0.16), transparent 24%),
-        radial-gradient(circle at top right, rgba(143, 255, 219, 0.10), transparent 18%),
-        linear-gradient(180deg, #0a1652 0%, #040E3D 42%, #040E3D 100%);
-    }
+/* TOPBAR */
+#topbar {
+  position:fixed; top:0; left:0; right:0;
+  height:var(--topbar-h);
+  background:var(--navy);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex; align-items:center;
+  z-index:200; padding-right:24px;
+}
+#topbar-brand {
+  width:var(--sidebar-w); flex-shrink:0;
+  display:flex; flex-direction:column;
+  align-items:flex-start; justify-content:center;
+  gap:3px; padding:0 22px;
+  border-right:1px solid rgba(255,255,255,0.08);
+  height:100%;
+}
+#topbar-brand img { height:30px; filter:brightness(0) invert(1); display:block; }
+#topbar-brand .lh-label { font-size:9px; font-weight:600; letter-spacing:0.38em; text-transform:uppercase; color:rgba(255,255,255,0.50); line-height:1; }
+#topbar-center { flex:1; display:flex; align-items:center; gap:10px; padding:0 24px; }
+#topbar-page-title { font-size:14px; font-weight:600; color:rgba(255,255,255,0.92); }
+.tb-sep { width:1px; height:16px; background:rgba(255,255,255,0.12); }
+#topbar-page-sub { font-size:12px; color:rgba(255,255,255,0.38); }
+#topbar-right { display:flex; align-items:center; gap:10px; }
+.demo-badge { font-size:9px; font-weight:600; padding:3px 10px; border-radius:999px; background:rgba(246,82,117,0.15); color:var(--red); border:1px solid rgba(246,82,117,0.30); letter-spacing:0.05em; text-transform:uppercase; }
+.topbar-avatar { width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(113,241,247,0.28); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--teal); cursor:pointer; }
 
-    body::before {
-      content: none;
-    }
+/* SIDEBAR */
+#sidebar {
+  position:fixed; top:var(--topbar-h); left:0; bottom:0;
+  width:var(--sidebar-w);
+  background:var(--navy);
+  border-right:1px solid rgba(255,255,255,0.07);
+  display:flex; flex-direction:column;
+  z-index:100; overflow-y:auto;
+}
+#sidebar::-webkit-scrollbar { width:3px; }
+#sidebar::-webkit-scrollbar-thumb { background:rgba(113,241,247,0.15); border-radius:2px; }
+.nav-section { font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:rgba(255,255,255,0.25); padding:16px 20px 5px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:9px 20px; cursor:pointer; border-left:2px solid transparent; color:rgba(255,255,255,0.45); transition:all 0.15s; text-decoration:none; font-size:12px; font-weight:500; }
+.nav-item:hover { background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.80); border-left-color:rgba(113,241,247,0.25); }
+.nav-item.active { background:rgba(113,241,247,0.08); color:var(--teal); border-left-color:var(--teal); }
+.nav-item.active .nav-icon svg { stroke:var(--teal); }
+.nav-item:hover .nav-icon svg  { stroke:rgba(255,255,255,0.75); }
+.nav-icon { width:16px; height:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nav-icon svg { width:14px; height:14px; stroke:rgba(255,255,255,0.38); stroke-width:1.5; fill:none; transition:stroke 0.15s; }
+.nav-label { white-space:nowrap; }
+.nav-badge { margin-left:auto; font-size:9px; font-weight:700; padding:2px 6px; border-radius:999px; }
+.nav-badge.warn { background:rgba(246,82,117,0.15); color:var(--red);  border:1px solid rgba(246,82,117,0.25); }
+.nav-badge.ok   { background:rgba(113,241,247,0.12); color:var(--teal); border:1px solid rgba(113,241,247,0.22); }
+.nav-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 20px; }
+.nav-footer { margin-top:auto; padding:14px 20px; border-top:1px solid rgba(255,255,255,0.07); font-size:9px; color:rgba(255,255,255,0.20); line-height:1.7; }
+.nav-footer span { color:var(--red); }
 
-    .hero-panel {
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-    }
+/* MAIN */
+#main { margin-top:var(--topbar-h); margin-left:var(--sidebar-w); min-height:calc(100vh - var(--topbar-h)); padding:28px 36px; background:var(--main-bg); display:flex; flex-direction:column; align-items:center; }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-    }
+/* CARDS — dark navy on light bg */
+.card { border-radius:20px; background:var(--navy); box-shadow:0 8px 28px rgba(4,14,61,0.18),0 1px 0 rgba(255,255,255,0.04) inset; padding:20px 24px; }
+.card-sm { border-radius:14px; background:var(--navy); box-shadow:0 4px 14px rgba(4,14,61,0.14); padding:14px 16px; }
+.card-title { font-size:9px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-bottom:14px; }
 
-    .mini-kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.45rem;
-      margin-top: 1rem;
-    }
+/* Hero card */
+.hero-card { border-radius:20px; background:var(--navy); box-shadow:0 12px 36px rgba(4,14,61,0.22),0 1px 0 rgba(255,255,255,0.05) inset; padding:24px 28px; margin-bottom:16px; position:relative; overflow:hidden; }
+.hero-card::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background:radial-gradient(circle at top left,rgba(113,241,247,0.08),transparent 40%); pointer-events:none; }
+.hero-badge { display:inline-flex; border-radius:999px; border:1px solid rgba(44,176,205,0.34); background:linear-gradient(135deg,rgba(44,176,205,0.16),rgba(113,241,247,0.08)); padding:4px 14px; font-size:9px; font-weight:600; letter-spacing:0.28em; text-transform:uppercase; color:var(--green); margin-bottom:12px; }
 
-    .mini-kpi {
-      min-height: 90px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 0.68rem 0.72rem;
-      border-radius: 12px;
-      border: 1px solid rgba(113,241,247,0.16);
-      background: linear-gradient(180deg, rgba(4, 14, 61, 0.94), rgba(8, 27, 74, 0.90));
-      box-shadow: 0 8px 18px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04);
-      backdrop-filter: blur(8px);
-    }
+/* KPI */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px; }
+.kpi-box { border-radius:14px; background:var(--navy); box-shadow:0 4px 16px rgba(4,14,61,0.16); padding:14px 16px; min-height:88px; display:flex; flex-direction:column; }
+.kpi-label { font-size:8px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:6px; }
+.kpi-value { font-size:22px; font-weight:600; letter-spacing:-0.04em; line-height:1; }
+.kpi-sub { margin-top:auto; padding-top:5px; font-size:10px; color:rgba(255,255,255,0.32); }
 
-    .mini-kpi-label {
-      min-height: 10px;
-      font-size: 7px;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.46);
-      margin: 0 0 0.34rem 0;
-      display: block;
-    }
+/* Table */
+.offering-row { display:grid; grid-template-columns:1fr 108px 62px 62px 140px 80px; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.offering-row:last-child { border-bottom:none; }
+.offering-name  { font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); }
+.offering-group { font-size:10px; color:rgba(255,255,255,0.30); margin-top:2px; }
 
-    .mini-kpi-value {
-      display: flex;
-      align-items: flex-end;
-      width: 100%;
-      min-height: 22px;
-      margin: 0;
-      font-size: 18px;
-      line-height: 1;
-      text-align: left;
-      font-weight: 600;
-      letter-spacing: -0.05em;
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum" 1;
-      color: white;
-    }
+/* Badges */
+.level-badge { display:inline-flex; align-items:center; font-size:10px; font-weight:600; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.l1 { background:rgba(246,82,117,0.14); color:var(--red);   border:1px solid rgba(246,82,117,0.30); }
+.l2 { background:rgba(255,179,71,0.12); color:var(--amber); border:1px solid rgba(255,179,71,0.30); }
+.l3 { background:rgba(143,255,219,0.10); color:var(--green); border:1px solid rgba(143,255,219,0.24); }
+.l4 { background:rgba(113,241,247,0.10); color:var(--teal);  border:1px solid rgba(113,241,247,0.24); }
+.l5 { background:rgba(192,166,255,0.10); color:var(--lav);   border:1px solid rgba(192,166,255,0.24); }
+.score-val   { font-size:15px; font-weight:600; text-align:center; line-height:1; letter-spacing:-0.02em; }
+.score-label { font-size:8px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.25); text-align:center; margin-top:2px; }
 
-    .mini-kpi-value.is-green { color: #8FFFDB; }
-    .mini-kpi-value.is-cyan { color: #71F1F7; }
-    .mini-kpi-value.is-red { color: #F65275; font-size: 18px; }
-    .mini-kpi-value.is-white { color: rgba(255,255,255,0.96); font-size: 18px; }
+/* Bar + gap */
+.bar-track { height:5px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; }
+.bar-fill  { height:100%; border-radius:999px; background:linear-gradient(to right,#F65275,#2CB0CD,#71F1F7,#8FFFDB); }
+.bar-label { font-size:9px; color:rgba(255,255,255,0.28); margin-top:3px; }
+.gap-pill  { display:inline-block; font-size:10px; font-weight:600; padding:3px 8px; border-radius:999px; text-align:center; }
+.gap-aligned    { background:rgba(143,255,219,0.12); color:var(--green); border:1px solid rgba(143,255,219,0.22); }
+.gap-moderate   { background:rgba(255,179,71,0.12);  color:var(--amber); border:1px solid rgba(255,179,71,0.28); }
+.gap-significant{ background:rgba(246,82,117,0.12);  color:var(--red);   border:1px solid rgba(246,82,117,0.22); }
 
-    .mini-kpi-meta {
-      min-height: 22px;
-      margin-top: auto;
-      font-size: 9px;
-      line-height: 1.22;
-      font-weight: 500;
-      color: rgba(255,255,255,0.66);
-      display: flex;
-      align-items: flex-start;
-    }
-  </style>
+/* Dim tags */
+.dim-tag { font-size:10px; font-weight:600; padding:2px 7px; border-radius:999px; }
+.tag-sa { background:rgba(113,241,247,0.10); color:var(--teal);  border:1px solid rgba(113,241,247,0.20); }
+.tag-cr { background:rgba(143,255,219,0.10); color:var(--green); border:1px solid rgba(143,255,219,0.20); }
+.tag-de { background:rgba(192,166,255,0.10); color:var(--lav);   border:1px solid rgba(192,166,255,0.20); }
+
+/* Section label */
+.section-label { font-size:9px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:rgba(4,14,61,0.38); margin-bottom:8px; }
+
+/* Action rows */
+.action-row { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.action-row:last-child { border-bottom:none; }
+.action-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.action-high { background:var(--red); }
+.action-mid  { background:var(--amber); }
+.action-gap  { background:var(--green); }
+.action-title { font-size:12px; font-weight:600; color:rgba(255,255,255,0.90); }
+.action-desc  { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; }
+.action-id    { font-size:10px; color:rgba(255,255,255,0.22); font-family:monospace; min-width:32px; text-align:right; flex-shrink:0; }
+
+/* Grids */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:14px; }
+
+/* Placeholder */
+.placeholder { border-radius:20px; padding:40px; border:2px dashed rgba(4,14,61,0.14); background:rgba(4,14,61,0.03); text-align:center; }
+.placeholder h2 { font-size:16px; font-weight:600; color:rgba(4,14,61,0.45); margin-bottom:6px; }
+.placeholder p  { font-size:13px; color:rgba(4,14,61,0.32); }
+
+/* Watermark */
+.demo-watermark { position:fixed; bottom:14px; right:18px; font-size:9px; color:rgba(4,14,61,0.28); letter-spacing:0.06em; pointer-events:none; z-index:999; }
+</style>
 </head>
-<body class="min-h-screen text-white font-sans">
+<body>
 
-<div class="mx-auto max-w-7xl px-4 pt-5 pb-4 sm:px-6 sm:pt-6 sm:pb-5 md:px-8 md:pt-7 md:pb-6 xl:px-10 xl:pt-8 xl:pb-6">
-  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-    <div class="flex flex-col items-start leading-none">
-      <img
-        src="https://cdn.prod.website-files.com/66f7a9d0051c2479948b2667/6930bea01a665531afb73e42_Crossfuze%20Logo_Cool%20Navy%20Gradient-p-500.png"
-        alt="Crossfuze logo"
-        class="h-7 w-auto brightness-0 invert sm:h-8 md:h-9"
-      />
-      <div class="mt-1 pl-1 text-[9px] font-semibold uppercase tracking-[0.34em] text-white/88 sm:text-[10px] sm:tracking-[0.42em]">Lighthouse</div>
+<header id="topbar">
+  <div id="topbar-brand">
+    <img src="https://cdn.prod.website-files.com/66f7a9d0051c2479948b2667/6930bea01a665531afb73e42_Crossfuze%20Logo_Cool%20Navy%20Gradient-p-500.png" alt="Crossfuze"/>
+    <span class="lh-label">Lighthouse</span>
+  </div>
+  <div id="topbar-center">
+    <span id="topbar-page-title"></span>
+    <div class="tb-sep" id="topbar-sep" style="display:none"></div>
+    <span id="topbar-page-sub"></span>
+  </div>
+  <div id="topbar-right">
+    <span class="demo-badge">Demo data</span>
+    <div class="topbar-avatar">CF</div>
+  </div>
+</header>
+
+<nav id="sidebar">
+  <div class="nav-section">Main</div>
+  <a href="index.html" class="nav-item active">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+    <span class="nav-label">Hub</span>
+  </a>
+  <a href="portfolio.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+    <span class="nav-label">Portfolio Overview</span>
+  </a>
+  <a href="offering.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+    <span class="nav-label">Offering Detail</span>
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Tools</div>
+  <a href="scoring.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>
+    <span class="nav-label">Scoring Session</span>
+  </a>
+  <a href="actions.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+    <span class="nav-label">Action Log</span>
+    <span class="nav-badge warn">8</span>
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Modules</div>
+  <a href="https://crossfuze-lighthouse.github.io/ZOOM/aeo.html" target="_blank" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <span class="nav-label">AEO Module</span>
+    <span class="nav-badge ok">L3</span>
+  </a>
+  <a href="gtm-assets.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>
+    <span class="nav-label">GTM Assets</span>
+  </a>
+  <a href="architecture.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+    <span class="nav-label">Architecture</span>
+  </a>
+  <div class="nav-footer">
+    <span>Demo data — illustrative only</span><br>
+    Q1 2026 · 5 offerings assessed<br>
+    Project Lighthouse v1.0
+  </div>
+</nav>
+
+<main id="main" class="fade-in">
+<div style="width:100%;max-width:1200px;">
+
+  <!-- HERO -->
+  <div class="hero-card" style="display:flex;align-items:center;justify-content:space-between;gap:24px;">
+    <div style="position:relative;z-index:1;">
+      <div class="hero-badge">Crossfuze GTM Portal</div>
+      <h1 style="font-size:1.9rem;font-weight:600;letter-spacing:-0.04em;color:rgba(255,255,255,0.96);line-height:1.1;margin-bottom:7px;">Project Lighthouse</h1>
+      <p style="font-size:13px;color:rgba(255,255,255,0.48);max-width:460px;line-height:1.6;">Central hub for Offering Maturity, Readiness and GTM Execution.</p>
     </div>
-
-    <div class="flex items-start justify-start sm:items-center sm:justify-end">
-      <span class="rounded-full border border-[#2CB0CD]/60 bg-[#2CB0CD]/18 px-3 py-1.5 text-[11px] font-semibold text-[#8FFFDB] shadow-[0_12px_28px_rgba(44,176,205,0.18)] sm:px-3.5 sm:py-2 sm:text-xs md:px-4 md:text-sm">Lighthouse Live</span>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <div style="text-align:right;">
+          <div style="font-size:1.8rem;font-weight:600;letter-spacing:-0.04em;color:#71F1F7;line-height:1;">L3</div>
+          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">AEO Level</div>
+        </div>
+        <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+        <div style="text-align:right;">
+          <div style="font-size:1.8rem;font-weight:600;letter-spacing:-0.04em;color:#8FFFDB;line-height:1;">5</div>
+          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">Assessed</div>
+        </div>
+        <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+        <div style="text-align:right;">
+          <div style="font-size:1.8rem;font-weight:600;letter-spacing:-0.04em;color:#F65275;line-height:1;">1</div>
+          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">Blocked</div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.18);text-align:right;">Q1 2026 · Demo data — illustrative only</div>
     </div>
   </div>
-</div>
 
-<div class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 md:px-8 md:pb-16 xl:px-10 xl:pb-20">
-  <div class="hero-panel rounded-[24px] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.09),transparent_30%),radial-gradient(circle_at_88%_0%,rgba(113,241,247,0.05),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.02))] p-4 shadow-[0_28px_72px_rgba(0,0,0,0.30)] backdrop-blur-xl sm:rounded-[28px] sm:p-5 md:p-7 xl:rounded-[38px] xl:p-10">
-    <div class="hero-content">
-    <div class="max-w-[860px]">
-      <div class="inline-flex max-w-full rounded-full border border-[#2CB0CD]/34 bg-[linear-gradient(135deg,rgba(44,176,205,0.16),rgba(113,241,247,0.08))] px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8FFFDB] shadow-[0_10px_28px_rgba(0,0,0,0.16)] sm:px-4 sm:py-2 sm:text-[11px] sm:tracking-[0.28em]">Crossfuze GTM Portal</div>
-      <h1 class="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.05em] text-white sm:text-[2.8rem] md:mt-5 md:text-6xl">Project Lighthouse</h1>
-      <p class="mt-3.5 max-w-2xl text-[14px] leading-6 text-white/88 sm:mt-4 sm:text-[16px] sm:leading-8">
-        A central hub for Crossfuze maturity, readiness, and GTM execution.
-      </p>
+  <!-- KPI STRIP -->
+  <div class="section-label">Portfolio at a glance</div>
+  <div class="kpi-grid">
+    <div class="kpi-box" style="border-left:3px solid rgba(113,241,247,0.45);">
+      <div class="kpi-label">Assessed</div>
+      <div class="kpi-value" style="color:#71F1F7">5</div>
+      <div class="kpi-sub">of 14 offerings</div>
     </div>
+    <div class="kpi-box" style="border-left:3px solid rgba(143,255,219,0.45);">
+      <div class="kpi-label">Avg Strength CMI</div>
+      <div class="kpi-value" style="color:#8FFFDB">3.18</div>
+      <div class="kpi-sub">across 5 offerings</div>
+    </div>
+    <div class="kpi-box" style="border-left:3px solid rgba(113,241,247,0.45);">
+      <div class="kpi-label">Avg Authority</div>
+      <div class="kpi-value" style="color:#71F1F7">2.40</div>
+      <div class="kpi-sub">composite weighted</div>
+    </div>
+    <div class="kpi-box" style="border-left:3px solid rgba(246,82,117,0.45);">
+      <div class="kpi-label">Blocked</div>
+      <div class="kpi-value" style="color:#F65275">1</div>
+      <div class="kpi-sub">must-have missing</div>
+    </div>
+  </div>
 
-    <div class="mt-9 sm:mt-11">
-      <div class="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/56 sm:text-[11px] sm:tracking-[0.28em]">Core Maturity</div>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <a href="offering.html" class="group flex min-h-[178px] sm:min-h-[198px] xl:min-h-[214px] h-full flex-col rounded-[22px] sm:rounded-[28px] xl:rounded-[32px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.035))] p-4 sm:p-5 xl:p-6 shadow-[0_24px_62px_rgba(0,0,0,0.28)] ring-1 ring-white/6 transition duration-200 hover:-translate-y-1.5 hover:border-white/18 hover:shadow-[0_30px_78px_rgba(0,0,0,0.34)]">
-          <div class="flex items-start justify-between gap-4">
-            <div class="max-w-[190px] text-[20px] font-semibold leading-[1.02] tracking-[-0.045em] text-white sm:max-w-[210px] sm:text-[23px] xl:max-w-[220px] xl:text-[26px]">Offering<br>Maturity</div>
-            <span class="-mt-0.5 inline-flex shrink-0 items-center rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/52 shadow-[0_8px_22px_rgba(0,0,0,0.12)] sm:px-3.5 sm:text-[11px] sm:tracking-[0.18em]">Planned</span>
-          </div>
-          <p class="mt-7 max-w-[290px] text-[13.5px] leading-[1.7] text-white/90">Assess offer readiness, packaging, proof, and operational maturity.</p>
-        </a>
+  <!-- PORTFOLIO TABLE -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Offering portfolio — maturity snapshot</div>
+    <div style="display:grid;grid-template-columns:1fr 108px 62px 62px 140px 80px;gap:12px;padding:0 0 8px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:2px;">
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.20);">Offering</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.20);text-align:center;">Claimed Level</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.20);text-align:center;">Authority</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.20);text-align:center;">CMI</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.20);">Progress</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.20);text-align:center;">Gap</div>
+    </div>
+    <div class="offering-row">
+      <div><div class="offering-name">SMART ITSM</div><div class="offering-group">SMART · GTM Lead</div></div>
+      <span class="level-badge l3">L3 Standardized</span>
+      <div><div class="score-val" style="color:#71F1F7">3.25</div><div class="score-label">weighted</div></div>
+      <div><div class="score-val" style="color:#8FFFDB">4.00</div><div class="score-label">criteria</div></div>
+      <div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="bar-label">65% — Progressing to L4</div></div>
+      <div style="text-align:center;"><span class="gap-pill gap-moderate">0.75</span></div>
+    </div>
+    <div class="offering-row">
+      <div><div class="offering-name">SMART CSM</div><div class="offering-group">SMART · GTM Lead</div></div>
+      <span class="level-badge l3">L3 Standardized</span>
+      <div><div class="score-val" style="color:#71F1F7">2.75</div><div class="score-label">weighted</div></div>
+      <div><div class="score-val" style="color:#8FFFDB">3.40</div><div class="score-label">criteria</div></div>
+      <div><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><div class="bar-label">50% — Progressing to L4</div></div>
+      <div style="text-align:center;"><span class="gap-pill gap-moderate">0.65</span></div>
+    </div>
+    <div class="offering-row">
+      <div><div class="offering-name">SMART HRSD</div><div class="offering-group">SMART · GTM Lead</div></div>
+      <span class="level-badge l2">L2 Developing</span>
+      <div><div class="score-val" style="color:#71F1F7">2.00</div><div class="score-label">weighted</div></div>
+      <div><div class="score-val" style="color:#8FFFDB">3.10</div><div class="score-label">criteria</div></div>
+      <div><div class="bar-track"><div class="bar-fill" style="width:35%"></div></div><div class="bar-label">35% — Early toward L3</div></div>
+      <div style="text-align:center;"><span class="gap-pill gap-significant">0.85</span></div>
+    </div>
+    <div class="offering-row">
+      <div><div class="offering-name">OOTBaaS ITSM</div><div class="offering-group">OOTBaaS · GTM Lead</div></div>
+      <span class="level-badge l1">L1 Blocked ⚠</span>
+      <div><div class="score-val" style="color:#F65275">1.50</div><div class="score-label">weighted</div></div>
+      <div><div class="score-val" style="color:#8FFFDB">2.60</div><div class="score-label">criteria</div></div>
+      <div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><div class="bar-label" style="color:#F65275">Blocked — 2 must-haves missing</div></div>
+      <div style="text-align:center;"><span class="gap-pill gap-significant">0.85</span></div>
+    </div>
+    <div class="offering-row">
+      <div><div class="offering-name">Managed Admin</div><div class="offering-group">Managed · CS Lead</div></div>
+      <span class="level-badge l2">L2 Developing</span>
+      <div><div class="score-val" style="color:#71F1F7">2.25</div><div class="score-label">weighted</div></div>
+      <div><div class="score-val" style="color:#8FFFDB">2.80</div><div class="score-label">criteria</div></div>
+      <div><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><div class="bar-label">58% — Progressing to L3</div></div>
+      <div style="text-align:center;"><span class="gap-pill gap-aligned">0.30</span></div>
+    </div>
+  </div>
 
-        <a href="vertical.html" class="group flex min-h-[178px] sm:min-h-[198px] xl:min-h-[214px] h-full flex-col rounded-[22px] sm:rounded-[28px] xl:rounded-[32px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.035))] p-4 sm:p-5 xl:p-6 shadow-[0_24px_62px_rgba(0,0,0,0.28)] ring-1 ring-white/6 transition duration-200 hover:-translate-y-1.5 hover:border-white/18 hover:shadow-[0_30px_78px_rgba(0,0,0,0.34)]">
-          <div class="flex items-start justify-between gap-4">
-            <div class="max-w-[190px] text-[20px] font-semibold leading-[1.02] tracking-[-0.045em] text-white sm:max-w-[210px] sm:text-[23px] xl:max-w-[220px] xl:text-[26px]">Vertical<br>Maturity</div>
-            <span class="-mt-0.5 inline-flex shrink-0 items-center rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/52 shadow-[0_8px_22px_rgba(0,0,0,0.12)] sm:px-3.5 sm:text-[11px] sm:tracking-[0.18em]">Planned</span>
-          </div>
-          <p class="mt-7 max-w-[290px] text-[13.5px] leading-[1.7] text-white/90">Review industry readiness, specialisation, and evidence by target vertical.</p>
-        </a>
+  <!-- MODULE CARDS -->
+  <div class="section-label">GTM modules</div>
+  <div class="grid-3" style="margin-bottom:14px;">
 
-        <a href="assets.html" class="group flex min-h-[178px] sm:min-h-[198px] xl:min-h-[214px] h-full flex-col rounded-[22px] sm:rounded-[28px] xl:rounded-[32px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.035))] p-4 sm:p-5 xl:p-6 shadow-[0_24px_62px_rgba(0,0,0,0.28)] ring-1 ring-white/6 transition duration-200 hover:-translate-y-1.5 hover:border-white/18 hover:shadow-[0_30px_78px_rgba(0,0,0,0.34)]">
-          <div class="flex items-start justify-between gap-4">
-            <div class="max-w-[220px] text-[20px] font-semibold leading-[1.02] tracking-[-0.045em] text-white sm:max-w-[240px] sm:text-[23px] xl:max-w-[250px] xl:text-[26px]">Assets &amp;<br>Enablement</div>
-            <span class="-mt-0.5 inline-flex shrink-0 items-center rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/52 shadow-[0_8px_22px_rgba(0,0,0,0.12)] sm:px-3.5 sm:text-[11px] sm:tracking-[0.18em]">Planned</span>
+    <!-- AEO -->
+    <a href="https://crossfuze-lighthouse.github.io/ZOOM/aeo.html" target="_blank" style="text-decoration:none;">
+      <div class="card" style="border:1px solid rgba(113,241,247,0.18);background:radial-gradient(circle at top right,rgba(113,241,247,0.07),transparent 40%),var(--navy);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;min-height:200px;display:flex;flex-direction:column;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.38);margin-bottom:4px;">AEO</div>
+            <div style="font-size:17px;font-weight:600;letter-spacing:-0.03em;color:rgba(255,255,255,0.95);">Inbound</div>
           </div>
-          <p class="mt-7 max-w-[292px] text-[13.5px] leading-[1.7] text-white/90">Track collateral, enablement, delivery proof, certifications, and commercial support.</p>
-        </a>
+          <span style="font-size:9px;font-weight:700;padding:3px 9px;border-radius:999px;background:linear-gradient(135deg,rgba(44,176,205,0.45),rgba(113,241,247,0.25));border:1px solid rgba(113,241,247,0.35);color:#F3FFFF;white-space:nowrap;flex-shrink:0;">Live Now</span>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.48);line-height:1.6;margin-bottom:10px;">Build visibility, structure and authority across AI and search channels.</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;">
+          <div style="border-radius:10px;padding:8px 10px;border:1px solid rgba(113,241,247,0.12);background:rgba(4,14,61,0.50);">
+            <div style="font-size:7px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:3px;">Score</div>
+            <div style="font-size:14px;font-weight:600;color:#8FFFDB;line-height:1;">2.8</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.30);margin-top:2px;">Standardized</div>
+          </div>
+          <div style="border-radius:10px;padding:8px 10px;border:1px solid rgba(113,241,247,0.12);background:rgba(4,14,61,0.50);">
+            <div style="font-size:7px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:3px;">Peer rank</div>
+            <div style="font-size:14px;font-weight:600;color:#71F1F7;line-height:1;">2.3</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.30);margin-top:2px;">of 8 peers</div>
+          </div>
+          <div style="border-radius:10px;padding:8px 10px;border:1px solid rgba(113,241,247,0.12);background:rgba(4,14,61,0.50);">
+            <div style="font-size:7px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:3px;">Gap</div>
+            <div style="font-size:14px;font-weight:600;color:#F65275;line-height:1;">Auth</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.30);margin-top:2px;">Priority</div>
+          </div>
+        </div>
+        <div style="margin-top:auto;">
+          <span style="display:inline-flex;border-radius:999px;padding:6px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.18em;background:linear-gradient(135deg,rgba(44,176,205,0.22),rgba(113,241,247,0.12));border:1px solid rgba(44,176,205,0.30);color:#ECFEFF;">Open AEO →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- GTM Assets -->
+    <a href="gtm-assets.html" style="text-decoration:none;">
+      <div class="card" style="border:1px solid rgba(143,255,219,0.18);background:radial-gradient(circle at top right,rgba(143,255,219,0.07),transparent 40%),var(--navy);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;min-height:200px;display:flex;flex-direction:column;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.38);margin-bottom:4px;">Collateral</div>
+            <div style="font-size:17px;font-weight:600;letter-spacing:-0.03em;color:rgba(255,255,255,0.95);">GTM Assets</div>
+          </div>
+          <span style="font-size:9px;font-weight:700;padding:3px 9px;border-radius:999px;background:linear-gradient(135deg,rgba(44,176,205,0.45),rgba(113,241,247,0.25));border:1px solid rgba(113,241,247,0.35);color:#F3FFFF;white-space:nowrap;flex-shrink:0;">Live Now</span>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.48);line-height:1.6;margin-bottom:10px;">Track collateral, enablement and proof by offering. See what exists, what's missing and what's in progress.</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;">
+          <div style="border-radius:10px;padding:8px 10px;border:1px solid rgba(143,255,219,0.12);background:rgba(4,14,61,0.50);">
+            <div style="font-size:7px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:3px;">Offerings</div>
+            <div style="font-size:14px;font-weight:600;color:#8FFFDB;line-height:1;">5</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.30);margin-top:2px;">tracked</div>
+          </div>
+          <div style="border-radius:10px;padding:8px 10px;border:1px solid rgba(143,255,219,0.12);background:rgba(4,14,61,0.50);">
+            <div style="font-size:7px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:3px;">Assets</div>
+            <div style="font-size:14px;font-weight:600;color:#8FFFDB;line-height:1;">23</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.30);margin-top:2px;">catalogued</div>
+          </div>
+          <div style="border-radius:10px;padding:8px 10px;border:1px solid rgba(143,255,219,0.12);background:rgba(4,14,61,0.50);">
+            <div style="font-size:7px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:3px;">Gaps</div>
+            <div style="font-size:14px;font-weight:600;color:#F65275;line-height:1;">11</div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.30);margin-top:2px;">identified</div>
+          </div>
+        </div>
+        <div style="margin-top:auto;">
+          <span style="display:inline-flex;border-radius:999px;padding:6px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.18em;background:linear-gradient(135deg,rgba(143,255,219,0.18),rgba(113,241,247,0.10));border:1px solid rgba(143,255,219,0.26);color:#ECFEFF;">Open Assets →</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Expansion — Planned -->
+    <div class="card" style="border:1px solid rgba(255,255,255,0.07);min-height:200px;display:flex;flex-direction:column;opacity:0.75;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;">
+        <div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.28);margin-bottom:4px;">Customers</div>
+          <div style="font-size:17px;font-weight:600;letter-spacing:-0.03em;color:rgba(255,255,255,0.70);">Expansion</div>
+        </div>
+        <span style="font-size:9px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.38);white-space:nowrap;flex-shrink:0;">Planned</span>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.35);line-height:1.6;margin-bottom:10px;">Build existing customer targeting, expansion plays and cross-sell / upsell readiness by offering.</div>
+      <div style="margin-top:auto;">
+        <span style="display:inline-flex;border-radius:999px;padding:6px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.18em;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.32);">Planned</span>
       </div>
     </div>
 
-    <div class="mt-10 border-t border-white/10 pt-8 sm:mt-12 sm:pt-9">
-      <div class="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/56 sm:text-[11px] sm:tracking-[0.28em]">GTM Maturity</div>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <a href="aeo.html" class="group relative flex min-h-[214px] sm:min-h-[236px] xl:min-h-[270px] h-full flex-col overflow-hidden rounded-[22px] sm:rounded-[28px] xl:rounded-[32px] border border-[#71F1F7]/22 bg-[radial-gradient(circle_at_top_left,rgba(113,241,247,0.14),transparent_22%),linear-gradient(145deg,rgba(4,14,61,0.96),rgba(8,27,74,0.92))] p-4 sm:p-5 xl:p-6 shadow-[0_34px_88px_rgba(0,0,0,0.38)] ring-1 ring-[#2CB0CD]/10 transition duration-200 hover:-translate-y-1.5 hover:border-[#71F1F7]/42 hover:shadow-[0_40px_100px_rgba(0,0,0,0.42)]">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <div class="min-h-[18px] text-[12px] font-semibold uppercase tracking-[0.22em] text-white/58">AEO</div>
-              <div class="mt-2 text-[20px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[23px] xl:text-[26px]">Inbound</div>
-            </div>
-            <span class="rounded-full border border-[#2CB0CD]/72 bg-[linear-gradient(135deg,rgba(44,176,205,0.52),rgba(113,241,247,0.28))] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F3FFFF] shadow-[0_14px_30px_rgba(44,176,205,0.28)] ring-1 ring-[#71F1F7]/18 sm:px-3 sm:py-1.5 sm:text-[11px] sm:tracking-[0.18em]">Live Now</span>
-          </div>
-          <p class="mt-4 text-[13px] leading-5.5 text-white/88">Build visibility, structure, and authority across AI and search channels.</p>
-          <div class="mini-kpi-grid" style="margin-top:0.85rem;">
-            <div class="mini-kpi">
-              <div class="mini-kpi-label">Maturity Score</div>
-              <div class="mini-kpi-value is-green">2.8</div>
-              <div class="mini-kpi-meta">Standardized</div>
-            </div>
-            <div class="mini-kpi">
-              <div class="mini-kpi-label">Peer Rank</div>
-              <div class="mini-kpi-value is-cyan">2.3</div>
-              <div class="mini-kpi-meta">Out of 8 Peers</div>
-            </div>
-            <div class="mini-kpi">
-              <div class="mini-kpi-label">Main Gap</div>
-              <div class="mini-kpi-value is-red">Authority</div>
-              <div class="mini-kpi-meta">Content &amp; Authority</div>
-            </div>
-          </div>
-          <div class="mt-auto pt-4 sm:pt-6 xl:pt-7">
-            <div class="rounded-full border border-[#2CB0CD]/34 bg-[linear-gradient(135deg,rgba(44,176,205,0.24),rgba(113,241,247,0.12))] px-3 py-1.5 text-[10px] sm:px-3.5 sm:py-2 sm:text-[11px] xl:px-4 xl:text-[12px] font-semibold uppercase tracking-[0.2em] text-[#ECFEFF] shadow-[0_10px_22px_rgba(44,176,205,0.14)]">Open AEO</div>
-          </div>
-        </a>
+  </div>
 
-        <a href="zoominfo.html" class="group relative flex min-h-[214px] sm:min-h-[236px] xl:min-h-[270px] h-full flex-col overflow-hidden rounded-[22px] sm:rounded-[28px] xl:rounded-[32px] border border-[#8FFFDB]/22 bg-[radial-gradient(circle_at_top_right,rgba(143,255,219,0.12),transparent_22%),linear-gradient(145deg,rgba(4,14,61,0.96),rgba(8,27,74,0.92))] p-4 sm:p-5 xl:p-6 shadow-[0_34px_88px_rgba(0,0,0,0.38)] ring-1 ring-[#2CB0CD]/10 transition duration-200 hover:-translate-y-1.5 hover:border-[#8FFFDB]/42 hover:shadow-[0_40px_100px_rgba(0,0,0,0.42)]">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <div class="min-h-[18px] text-[12px] font-semibold uppercase tracking-[0.22em] text-white/58">ZoomInfo</div>
-              <div class="mt-2 text-[20px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[23px] xl:text-[26px]">Outbound</div>
-            </div>
-            <span class="rounded-full border border-[#2CB0CD]/72 bg-[linear-gradient(135deg,rgba(44,176,205,0.52),rgba(113,241,247,0.28))] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F3FFFF] shadow-[0_14px_30px_rgba(44,176,205,0.28)] ring-1 ring-[#71F1F7]/18 sm:px-3 sm:py-1.5 sm:text-[11px] sm:tracking-[0.18em]">Live Now</span>
-          </div>
-          <p class="mt-4 text-[13px] leading-5.5 text-white/88">Enable signal-led outreach, readiness tracking, and sales activation.</p>
-          <div class="mini-kpi-grid" style="margin-top:0.85rem;">
-            <div class="mini-kpi">
-              <div class="mini-kpi-label">Signals</div>
-              <div class="mini-kpi-value is-green">Live</div>
-              <div class="mini-kpi-meta">Intent + fit model</div>
-            </div>
-            <div class="mini-kpi">
-              <div class="mini-kpi-label">Motion</div>
-              <div class="mini-kpi-value is-cyan">UK</div>
-              <div class="mini-kpi-meta">Sales activation live</div>
-            </div>
-            <div class="mini-kpi">
-              <div class="mini-kpi-label">Focus</div>
-              <div class="mini-kpi-value is-white">Outbound</div>
-              <div class="mini-kpi-meta">Signal-led outreach</div>
-            </div>
-          </div>
-          <div class="mt-auto pt-4 sm:pt-6 xl:pt-7">
-            <div class="rounded-full border border-[#2CB0CD]/34 bg-[linear-gradient(135deg,rgba(44,176,205,0.24),rgba(113,241,247,0.12))] px-3 py-1.5 text-[10px] sm:px-3.5 sm:py-2 sm:text-[11px] xl:px-4 xl:text-[12px] font-semibold uppercase tracking-[0.2em] text-[#ECFEFF] shadow-[0_10px_22px_rgba(44,176,205,0.14)]">Open Zoom</div>
-          </div>
-        </a>
-
-        <a href="expansion.html" class="group flex min-h-[178px] sm:min-h-[198px] xl:min-h-[214px] h-full flex-col rounded-[22px] sm:rounded-[28px] xl:rounded-[32px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.035))] p-4 sm:p-5 xl:p-6 shadow-[0_24px_62px_rgba(0,0,0,0.28)] ring-1 ring-white/6 transition duration-200 hover:-translate-y-1.5 hover:border-white/18 hover:shadow-[0_30px_78px_rgba(0,0,0,0.34)]">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <div class="min-h-[18px] text-[12px] font-semibold uppercase tracking-[0.22em] text-white/58">Customers</div>
-              <div class="mt-2 text-[20px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[23px] xl:text-[26px]">Expansion</div>
-            </div>
-            <span class="rounded-full border border-white/12 bg-white/[0.05] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/52 shadow-[0_8px_22px_rgba(0,0,0,0.12)] sm:px-3 sm:py-1.5 sm:text-[11px] sm:tracking-[0.18em]">Planned</span>
-          </div>
-          <p class="mt-4 text-[13.5px] leading-6 text-white/90">Build existing customer targeting, expansion plays, and cross-sell / upsell readiness.</p>
-          <div class="mt-auto pt-4 sm:pt-6 xl:pt-7">
-            <div class="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[10px] sm:px-3.5 sm:py-2 sm:text-[11px] xl:px-4 xl:text-[12px] font-semibold uppercase tracking-[0.2em] text-white/52 shadow-[0_10px_24px_rgba(0,0,0,0.12)]">Planned</div>
-          </div>
-        </a>
+  <!-- PRIORITY ACTIONS -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="card-title" style="margin:0;">Top priority actions — cross portfolio</div>
+      <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(246,82,117,0.12);color:#F65275;border:1px solid rgba(246,82,117,0.22);">8 open</span>
+    </div>
+    <div class="action-row">
+      <div class="action-dot action-high"></div>
+      <div style="flex:1;">
+        <div class="action-title">Complete delivery playbook (3.7) — OOTBaaS ITSM</div>
+        <div class="action-desc">L2 Delivery must-have · removes block · claimed level immediately lifts to L2</div>
       </div>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(246,82,117,0.12);color:#F65275;border:1px solid rgba(246,82,117,0.20);flex-shrink:0;">Blocked</span>
+    </div>
+    <div class="action-row">
+      <div class="action-dot action-high"></div>
+      <div style="flex:1;">
+        <div class="action-title">SOW template in use (2.6) — OOTBaaS ITSM</div>
+        <div class="action-desc">L2 CR must-have · second blocker preventing L2 claim</div>
+      </div>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(246,82,117,0.12);color:#F65275;border:1px solid rgba(246,82,117,0.20);flex-shrink:0;">Blocked</span>
+    </div>
+    <div class="action-row">
+      <div class="action-dot action-mid"></div>
+      <div style="flex:1;">
+        <div class="action-title">Published case study — min 1 (4.9) — SMART CSM</div>
+        <div class="action-desc">L3 SA must-have · no published CSM case study yet</div>
+      </div>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(255,179,71,0.10);color:#FFB347;border:1px solid rgba(255,179,71,0.22);flex-shrink:0;">Must-have</span>
+    </div>
+    <div class="action-row">
+      <div class="action-dot action-mid"></div>
+      <div style="flex:1;">
+        <div class="action-title">Win rate tracked by offering (4.17) — SMART ITSM</div>
+        <div class="action-desc">L4 SA must-have · required before ITSM can claim L4</div>
+      </div>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(255,179,71,0.10);color:#FFB347;border:1px solid rgba(255,179,71,0.22);flex-shrink:0;">Must-have</span>
     </div>
   </div>
-</div>
 
+</div>
+</main>
+
+<div class="demo-watermark">Demo data — illustrative only · Project Lighthouse v1.0</div>
+
+<script>
+(function(){
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.remove('active');
+    if(el.getAttribute('href') === page) el.classList.add('active');
+  });
+  const titles = {
+    'index.html':        ['Hub',              'Portfolio overview · 5 assessed offerings · Q1 2026'],
+    'portfolio.html':    ['Portfolio Overview','All offerings · maturity heatmap · Q1 2026'],
+    'offering.html':     ['Offering Detail',  'SMART ITSM · Full maturity output'],
+    'scoring.html':      ['Scoring Session',  'Interactive scoring tool · live calculation'],
+    'actions.html':      ['Action Log',       'Priority actions across all offerings'],
+    'aeo.html':          ['AEO Module',       'Answer Engine Optimisation · L3 Standardized'],
+    'gtm-assets.html':   ['GTM Assets',       'Collateral, enablement and proof — by offering'],
+    'architecture.html': ['Architecture',     'Backend architecture · data model'],
+  };
+  const meta = titles[page] || ['Hub','Portfolio overview · 5 assessed offerings · Q1 2026'];
+  const t = document.getElementById('topbar-page-title');
+  const s = document.getElementById('topbar-page-sub');
+  const sep = document.getElementById('topbar-sep');
+  if(t) t.textContent = meta[0];
+  if(s) s.textContent = meta[1];
+  if(sep) sep.style.display = meta[1] ? '' : 'none';
+})();
+</script>
 </body>
 </html>
