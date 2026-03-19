@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#F0F2F7">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GTM Assets | Project Lighthouse | Crossfuze</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#040E3D;--teal:#71F1F7;--green:#8FFFDB;--red:#F65275;--lav:#C0A6FF;--util:#2CB0CD;--purple:#6400EC;--main-bg:#F0F2F7;--sidebar-w:232px;--topbar-h:64px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--main-bg)!important;color:rgba(255,255,255,0.9);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;min-height:100vh;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease forwards;}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;z-index:200;padding-right:24px;}
+#topbar-brand{width:var(--sidebar-w);flex-shrink:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;padding:0 22px;border-right:1px solid rgba(255,255,255,0.08);height:100%;}
+#topbar-brand img{height:30px;filter:brightness(0) invert(1);display:block;}
+#topbar-brand .lh-label{font-size:9px;font-weight:600;letter-spacing:0.38em;text-transform:uppercase;color:rgba(255,255,255,0.50);line-height:1;}
+#topbar-center{flex:1;display:flex;align-items:center;gap:10px;padding:0 24px;}
+#topbar-page-title{font-size:14px;font-weight:600;color:rgba(255,255,255,0.92);}
+.tb-sep{width:1px;height:16px;background:rgba(255,255,255,0.12);}
+#topbar-page-sub{font-size:12px;color:rgba(255,255,255,0.38);}
+#topbar-right{display:flex;align-items:center;gap:10px;}
+.demo-badge{font-size:9px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(246,82,117,0.15);color:var(--red);border:1px solid rgba(246,82,117,0.30);letter-spacing:0.05em;text-transform:uppercase;}
+.topbar-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(113,241,247,0.28);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--teal);cursor:pointer;}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--navy);border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+#sidebar::-webkit-scrollbar{width:3px;}
+#sidebar::-webkit-scrollbar-thumb{background:rgba(113,241,247,0.15);border-radius:2px;}
+.nav-section{font-size:9px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:16px 20px 5px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;border-left:2px solid transparent;color:rgba(255,255,255,0.45);transition:all 0.15s;text-decoration:none;font-size:12px;font-weight:500;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.80);border-left-color:rgba(113,241,247,0.25);}
+.nav-item.active{background:rgba(113,241,247,0.08);color:var(--teal);border-left-color:var(--teal);}
+.nav-item.active .nav-icon svg{stroke:var(--teal);}
+.nav-item:hover .nav-icon svg{stroke:rgba(255,255,255,0.75);}
+.nav-icon{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-icon svg{width:14px;height:14px;stroke:rgba(255,255,255,0.38);stroke-width:1.5;fill:none;transition:stroke 0.15s;}
+.nav-label{white-space:nowrap;}
+.nav-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;}
+.nav-badge.warn{background:rgba(246,82,117,0.15);color:var(--red);border:1px solid rgba(246,82,117,0.25);}
+.nav-badge.ok{background:rgba(113,241,247,0.12);color:var(--teal);border:1px solid rgba(113,241,247,0.22);}
+.nav-divider{height:1px;background:rgba(255,255,255,0.06);margin:6px 20px;}
+.nav-footer{margin-top:auto;padding:14px 20px;border-top:1px solid rgba(255,255,255,0.07);font-size:9px;color:rgba(255,255,255,0.20);line-height:1.7;}
+.nav-footer span{color:var(--red);}
+
+/* MAIN */
+#main{margin-top:var(--topbar-h);margin-left:var(--sidebar-w);min-height:calc(100vh - var(--topbar-h));padding:28px 36px;background:var(--main-bg);display:flex;flex-direction:column;align-items:center;}
+
+/* SHARED */
+.card{border-radius:18px;background:var(--navy);box-shadow:0 8px 24px rgba(4,14,61,0.16);padding:20px 24px;margin-bottom:14px;}
+.card-title{font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.26);margin-bottom:14px;}
+.section-label{font-size:9px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:#040E3D;opacity:0.65;margin-bottom:8px;margin-top:6px;}
+
+/* HERO */
+.hero-card{border-radius:18px;background:var(--navy);box-shadow:0 12px 36px rgba(4,14,61,0.20);padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden;}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at top left,rgba(143,255,219,0.07),transparent 40%);pointer-events:none;}
+.hero-badge{display:inline-flex;border-radius:999px;border:1px solid rgba(143,255,219,0.28);background:rgba(143,255,219,0.08);padding:3px 12px;font-size:9px;font-weight:600;letter-spacing:0.26em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+
+/* KPI STRIP */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.kpi-box{border-radius:14px;background:var(--navy);box-shadow:0 4px 14px rgba(4,14,61,0.14);padding:14px 16px;min-height:80px;display:flex;flex-direction:column;border-left:3px solid transparent;}
+.kpi-label{font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.32);margin-bottom:6px;}
+.kpi-value{font-size:22px;font-weight:600;letter-spacing:-0.04em;line-height:1;}
+.kpi-sub{margin-top:auto;padding-top:4px;font-size:10px;color:rgba(255,255,255,0.30);}
+
+/* OFFERING FILTER */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-btn{font-size:11px;font-weight:600;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.12);background:var(--navy);color:rgba(255,255,255,0.45);cursor:pointer;transition:all 0.15s;}
+.filter-btn:hover{border-color:rgba(113,241,247,0.28);color:rgba(255,255,255,0.78);}
+.filter-btn.active{background:rgba(113,241,247,0.10);border-color:rgba(113,241,247,0.35);color:var(--teal);}
+
+/* ASSET CATEGORY HEADERS */
+.cat-header{display:grid;grid-template-columns:200px 1fr 1fr 1fr 1fr 1fr;gap:0;margin-bottom:0;}
+.cat-col-hd{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:8px 12px;text-align:center;}
+.cat-col-hd.offering-col{text-align:left;color:rgba(255,255,255,0.28);}
+.cat-col-hd.status-col{color:rgba(255,255,255,0.22);}
+
+/* ASSET TYPE LEGEND */
+.legend{display:flex;align-items:center;gap:16px;margin-bottom:12px;padding:10px 14px;border-radius:10px;background:rgba(4,14,61,0.05);border:1px solid rgba(4,14,61,0.10);}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:500;color:rgba(4,14,61,0.60);}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.dot-exists{background:var(--green);}
+.dot-progress{background:var(--lav);}
+.dot-missing{background:var(--red);}
+.dot-na{background:rgba(255,255,255,0.15);}
+
+/* ASSET TABLE */
+.asset-table{width:100%;}
+.offering-section{margin-bottom:6px;}
+.offering-header-row{display:grid;grid-template-columns:200px repeat(5,1fr);align-items:center;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.04);margin-bottom:4px;cursor:pointer;transition:background 0.15s;}
+.offering-header-row:hover{background:rgba(255,255,255,0.06);}
+.oh-name{font-size:12px;font-weight:700;color:rgba(255,255,255,0.88);}
+.oh-group{font-size:10px;color:rgba(255,255,255,0.30);margin-top:1px;}
+.oh-cell{display:flex;justify-content:center;}
+.asset-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.ad-exists{background:var(--green);}
+.ad-progress{background:var(--lav);}
+.ad-missing{background:var(--red);opacity:0.80;}
+.ad-na{background:rgba(255,255,255,0.12);}
+
+/* ASSET DETAIL ROWS */
+.asset-rows{border-radius:10px;overflow:hidden;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06);}
+.asset-row{display:grid;grid-template-columns:200px repeat(5,1fr);align-items:center;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.asset-row:last-child{border-bottom:none;}
+.asset-row:nth-child(even){background:rgba(255,255,255,0.02);}
+.ar-name{font-size:11px;font-weight:600;color:rgba(255,255,255,0.80);}
+.ar-type{font-size:9px;color:rgba(255,255,255,0.28);margin-top:1px;}
+.ar-cell{display:flex;justify-content:center;align-items:center;}
+.status-pill{font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap;}
+.sp-exists{background:rgba(143,255,219,0.10);color:var(--green);border:1px solid rgba(143,255,219,0.20);}
+.sp-progress{background:rgba(192,166,255,0.10);color:var(--lav);border:1px solid rgba(192,166,255,0.20);}
+.sp-missing{background:rgba(246,82,117,0.10);color:var(--red);border:1px solid rgba(246,82,117,0.20);}
+.sp-na{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.08);}
+
+/* SUMMARY CARD */
+.gap-summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+.gap-summary-card{border-radius:12px;background:var(--navy);padding:12px 14px;border:1px solid rgba(255,255,255,0.08);}
+.gsc-name{font-size:10px;font-weight:600;color:rgba(255,255,255,0.75);margin-bottom:8px;line-height:1.3;}
+.gsc-bars{display:flex;flex-direction:column;gap:4px;}
+.gsc-bar-row{display:flex;align-items:center;gap:6px;}
+.gsc-bar-label{font-size:8px;color:rgba(255,255,255,0.28);min-width:14px;}
+.gsc-bar-track{flex:1;height:4px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden;}
+.gsc-bar-fill{height:100%;border-radius:999px;}
+.gsc-count{font-size:8px;font-weight:600;min-width:14px;text-align:right;}
+
+.demo-watermark{position:fixed;bottom:14px;right:18px;font-size:9px;color:rgba(4,14,61,0.40);letter-spacing:0.06em;pointer-events:none;z-index:999;}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div id="topbar-brand">
+    <img src="https://cdn.prod.website-files.com/66f7a9d0051c2479948b2667/6930bea01a665531afb73e42_Crossfuze%20Logo_Cool%20Navy%20Gradient-p-500.png" alt="Crossfuze"/>
+    <span class="lh-label">Lighthouse</span>
+  </div>
+  <div id="topbar-center">
+    <span id="topbar-page-title">GTM Assets</span>
+    <div class="tb-sep"></div>
+    <span id="topbar-page-sub">Collateral, enablement and proof — by offering · Q1 2026</span>
+  </div>
+  <div id="topbar-right">
+    <span class="demo-badge">Demo data</span>
+    <div class="topbar-avatar">CF</div>
+  </div>
+</header>
+
+<nav id="sidebar">
+  <div class="nav-section">Main</div>
+  <a href="index.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+    <span class="nav-label">Hub</span>
+  </a>
+  <a href="portfolio.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+    <span class="nav-label">Portfolio Overview</span>
+  </a>
+  <a href="offering.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+    <span class="nav-label">Offering Detail</span>
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Tools</div>
+  <a href="scoring.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>
+    <span class="nav-label">Scoring Session</span>
+  </a>
+  <a href="actions.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+    <span class="nav-label">Action Log</span>
+    <span class="nav-badge warn">8</span>
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Modules</div>
+  <a href="https://crossfuze-lighthouse.github.io/ZOOM/aeo.html" target="_blank" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <span class="nav-label">AEO Module</span>
+    <span class="nav-badge ok">L3</span>
+  </a>
+  <a href="gtm-assets.html" class="nav-item active">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>
+    <span class="nav-label">GTM Assets</span>
+  </a>
+  <a href="architecture.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+    <span class="nav-label">Architecture</span>
+  </a>
+  <div class="nav-footer">
+    <span>Demo data — illustrative only</span><br>
+    Q1 2026 · 5 offerings assessed<br>
+    Project Lighthouse v1.0
+  </div>
+</nav>
+
+<main id="main" class="fade-in">
+<div style="width:100%;max-width:1200px;">
+
+  <!-- HERO -->
+  <div class="hero-card" style="margin-bottom:16px;">
+    <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      <div>
+        <div class="hero-badge">Collateral &amp; Enablement</div>
+        <h1 style="font-size:1.6rem;font-weight:600;letter-spacing:-0.04em;color:rgba(255,255,255,0.96);margin-bottom:6px;">GTM Assets</h1>
+        <p style="font-size:13px;color:rgba(255,255,255,0.45);max-width:480px;line-height:1.6;">Track what sales, delivery and marketing collateral exists for each offering — and what's missing or in progress.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+        <div style="display:flex;gap:14px;">
+          <div style="text-align:right;">
+            <div style="font-size:1.6rem;font-weight:600;color:#8FFFDB;line-height:1;">23</div>
+            <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">Assets exist</div>
+          </div>
+          <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+          <div style="text-align:right;">
+            <div style="font-size:1.6rem;font-weight:600;color:#C0A6FF;line-height:1;">8</div>
+            <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">In progress</div>
+          </div>
+          <div style="width:1px;height:36px;background:rgba(255,255,255,0.08);"></div>
+          <div style="text-align:right;">
+            <div style="font-size:1.6rem;font-weight:600;color:#F65275;line-height:1;">14</div>
+            <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,255,255,0.28);margin-top:2px;">Missing</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:rgba(255,255,255,0.18);">5 offerings · Q1 2026 · Demo data</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY BY OFFERING -->
+  <div class="section-label">Coverage by offering</div>
+  <div class="gap-summary-grid">
+    <div class="gap-summary-card">
+      <div class="gsc-name">SMART ITSM</div>
+      <div class="gsc-bars">
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#8FFFDB">✓</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:73%;background:#8FFFDB;"></div></div><div class="gsc-count" style="color:#8FFFDB">8</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#C0A6FF">◑</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:18%;background:#C0A6FF;"></div></div><div class="gsc-count" style="color:#C0A6FF">2</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#F65275">✗</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:9%;background:#F65275;"></div></div><div class="gsc-count" style="color:#F65275">1</div></div>
+      </div>
+    </div>
+    <div class="gap-summary-card">
+      <div class="gsc-name">SMART CSM</div>
+      <div class="gsc-bars">
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#8FFFDB">✓</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:55%;background:#8FFFDB;"></div></div><div class="gsc-count" style="color:#8FFFDB">6</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#C0A6FF">◑</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:18%;background:#C0A6FF;"></div></div><div class="gsc-count" style="color:#C0A6FF">2</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#F65275">✗</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:27%;background:#F65275;"></div></div><div class="gsc-count" style="color:#F65275">3</div></div>
+      </div>
+    </div>
+    <div class="gap-summary-card">
+      <div class="gsc-name">SMART HRSD</div>
+      <div class="gsc-bars">
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#8FFFDB">✓</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:27%;background:#8FFFDB;"></div></div><div class="gsc-count" style="color:#8FFFDB">3</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#C0A6FF">◑</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:18%;background:#C0A6FF;"></div></div><div class="gsc-count" style="color:#C0A6FF">2</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#F65275">✗</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:55%;background:#F65275;"></div></div><div class="gsc-count" style="color:#F65275">6</div></div>
+      </div>
+    </div>
+    <div class="gap-summary-card">
+      <div class="gsc-name">OOTBaaS ITSM</div>
+      <div class="gsc-bars">
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#8FFFDB">✓</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:36%;background:#8FFFDB;"></div></div><div class="gsc-count" style="color:#8FFFDB">4</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#C0A6FF">◑</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:18%;background:#C0A6FF;"></div></div><div class="gsc-count" style="color:#C0A6FF">2</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#F65275">✗</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:36%;background:#F65275;"></div></div><div class="gsc-count" style="color:#F65275">4</div></div>
+      </div>
+    </div>
+    <div class="gap-summary-card">
+      <div class="gsc-name">Managed Admin</div>
+      <div class="gsc-bars">
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#8FFFDB">✓</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:55%;background:#8FFFDB;"></div></div><div class="gsc-count" style="color:#8FFFDB">5</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#C0A6FF">◑</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:0%;background:#C0A6FF;"></div></div><div class="gsc-count" style="color:#C0A6FF">0</div></div>
+        <div class="gsc-bar-row"><div class="gsc-bar-label" style="color:#F65275">✗</div><div class="gsc-bar-track"><div class="gsc-bar-fill" style="width:36%;background:#F65275;"></div></div><div class="gsc-count" style="color:#F65275">4</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <div class="section-label" style="margin:0;">Asset tracker</div>
+    <div class="filter-bar" style="margin:0;">
+      <button class="filter-btn active" onclick="filterOffering('all',this)">All offerings</button>
+      <button class="filter-btn" onclick="filterOffering('smart-itsm',this)">SMART ITSM</button>
+      <button class="filter-btn" onclick="filterOffering('smart-csm',this)">SMART CSM</button>
+      <button class="filter-btn" onclick="filterOffering('smart-hrsd',this)">SMART HRSD</button>
+      <button class="filter-btn" onclick="filterOffering('ootbaas-itsm',this)">OOTBaaS ITSM</button>
+      <button class="filter-btn" onclick="filterOffering('managed-admin',this)">Managed Admin</button>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend" style="margin-bottom:10px;">
+    <div class="legend-item" style="color:rgba(4,14,61,0.65);"><div class="legend-dot dot-exists"></div>Exists — live and accessible</div>
+    <div class="legend-item" style="color:rgba(4,14,61,0.65);"><div class="legend-dot dot-progress"></div>In progress — draft or owner assigned</div>
+    <div class="legend-item" style="color:rgba(4,14,61,0.65);"><div class="legend-dot dot-missing"></div>Missing — not started</div>
+    <div class="legend-item" style="color:rgba(4,14,61,0.65);"><div class="legend-dot dot-na"></div>N/A — not applicable for this offering</div>
+  </div>
+
+  <!-- ASSET TABLE -->
+  <div class="card" style="padding:0;overflow:hidden;">
+
+    <!-- Column headers -->
+    <div style="display:grid;grid-template-columns:220px repeat(5,1fr);padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);">Asset</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-align:center;">SMART ITSM</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-align:center;">SMART CSM</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-align:center;">SMART HRSD</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-align:center;">OOTBaaS ITSM</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-align:center;">Managed Admin</div>
+    </div>
+
+    <!-- Category: Sales & GTM -->
+    <div id="asset-table-body"></div>
+
+  </div>
+
+</div>
+</main>
+
+<div class="demo-watermark">Demo data — illustrative only · Project Lighthouse v1.0</div>
+
+<script>
+// E=exists, P=progress, M=missing, N=n/a
+// Columns: [SMART ITSM, SMART CSM, SMART HRSD, OOTBaaS ITSM, Managed Admin]
+const ASSETS = [
+  {cat:'Sales & GTM',     name:'Sales deck',              type:'Collateral',   cols:['E','E','M','E','E']},
+  {cat:'Sales & GTM',     name:'Pitch narrative',          type:'Messaging',    cols:['E','E','P','P','E']},
+  {cat:'Sales & GTM',     name:'Qualification checklist',  type:'Sales tool',   cols:['E','E','M','E','E']},
+  {cat:'Sales & GTM',     name:'Objection handling guide', type:'Sales tool',   cols:['E','P','M','M','E']},
+  {cat:'Sales & GTM',     name:'ROI / value calculator',   type:'Sales tool',   cols:['P','M','M','M','N']},
+  {cat:'Commercial',      name:'Pricing model',            type:'Commercial',   cols:['E','E','M','E','E']},
+  {cat:'Commercial',      name:'SOW template',             type:'Commercial',   cols:['E','E','P','E','E']},
+  {cat:'Commercial',      name:'Proposal template',        type:'Commercial',   cols:['E','P','M','P','E']},
+  {cat:'Commercial',      name:'Margin model',             type:'Commercial',   cols:['E','E','M','E','E']},
+  {cat:'Delivery',        name:'Delivery playbook',        type:'Delivery',     cols:['E','E','P','M','E']},
+  {cat:'Delivery',        name:'Project templates',        type:'Delivery',     cols:['E','E','M','M','E']},
+  {cat:'Delivery',        name:'CSAT process & template',  type:'Delivery',     cols:['E','M','M','M','E']},
+  {cat:'Delivery',        name:'Escalation runbook',       type:'Delivery',     cols:['E','E','M','M','P']},
+  {cat:'Reference & Proof',name:'Published case study',    type:'Marketing',    cols:['E','M','M','E','M']},
+  {cat:'Reference & Proof',name:'Named reference (min 1)', type:'Marketing',    cols:['E','E','M','E','E']},
+  {cat:'Reference & Proof',name:'Win rate data in CRM',    type:'Data',         cols:['P','M','M','M','E']},
+  {cat:'Reference & Proof',name:'CSAT score on record',    type:'Data',         cols:['E','E','M','M','E']},
+  {cat:'Marketing',       name:'Thought leadership content',type:'Marketing',   cols:['P','M','M','M','M']},
+  {cat:'Marketing',       name:'Target account list',      type:'Data',         cols:['E','E','M','E','E']},
+  {cat:'Marketing',       name:'Campaign brief',           type:'Marketing',    cols:['E','M','M','M','M']},
+  {cat:'Marketing',       name:'Partner portal complete',  type:'Alliance',     cols:['E','E','E','E','E']},
+  {cat:'Partner & SN',    name:'SN co-sell agreement',     type:'Alliance',     cols:['E','P','M','E','E']},
+  {cat:'Partner & SN',    name:'Named SN overlay',         type:'Alliance',     cols:['P','E','M','E','E']},
+];
+
+const STATUS = {
+  E:{cls:'sp-exists',  dot:'ad-exists',   label:'Exists'},
+  P:{cls:'sp-progress',dot:'ad-progress', label:'In progress'},
+  M:{cls:'sp-missing', dot:'ad-missing',  label:'Missing'},
+  N:{cls:'sp-na',      dot:'ad-na',       label:'N/A'},
+};
+
+const OFFERINGS = ['SMART ITSM','SMART CSM','SMART HRSD','OOTBaaS ITSM','Managed Admin'];
+const OFFERING_KEYS = ['smart-itsm','smart-csm','smart-hrsd','ootbaas-itsm','managed-admin'];
+
+let currentFilter = 'all';
+
+function getColIndices() {
+  if(currentFilter === 'all') return [0,1,2,3,4];
+  return [OFFERING_KEYS.indexOf(currentFilter)];
+}
+
+function renderTable() {
+  const indices = getColIndices();
+  const cats = [...new Set(ASSETS.map(a => a.cat))];
+  let html = '';
+
+  cats.forEach(cat => {
+    const catAssets = ASSETS.filter(a => a.cat === cat);
+    html += `<div style="border-bottom:1px solid rgba(255,255,255,0.07);">`;
+    // Category label row
+    html += `<div style="padding:10px 16px 4px;background:rgba(255,255,255,0.025);">
+      <span style="font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.28);">${cat}</span>
+    </div>`;
+
+    catAssets.forEach((asset, i) => {
+      const cols = indices.map(idx => {
+        const s = STATUS[asset.cols[idx]];
+        return `<div style="display:flex;justify-content:center;align-items:center;">
+          <span class="status-pill ${s.cls}">${s.label}</span>
+        </div>`;
+      }).join('');
+
+      const gridCols = currentFilter === 'all'
+        ? 'grid-template-columns:220px repeat(5,1fr)'
+        : 'grid-template-columns:220px 1fr';
+
+      html += `<div style="display:grid;${gridCols};align-items:center;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,0.04);${i%2===1?'background:rgba(255,255,255,0.015)':''}">
+        <div>
+          <div style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.82);">${asset.name}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.28);margin-top:1px;">${asset.type}</div>
+        </div>
+        ${cols}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  document.getElementById('asset-table-body').innerHTML = html;
+}
+
+function filterOffering(key, btn) {
+  currentFilter = key;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+renderTable();
+</script>
+</body>
+</html>

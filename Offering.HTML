@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#F0F2F7">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Offering Detail | Project Lighthouse | Crossfuze</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#040E3D;--teal:#71F1F7;--green:#8FFFDB;--red:#F65275;--lav:#C0A6FF;--util:#2CB0CD;--purple:#6400EC;--main-bg:#F0F2F7;--sidebar-w:232px;--topbar-h:64px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--main-bg)!important;color:rgba(255,255,255,0.9);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;min-height:100vh;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease forwards;}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;z-index:200;padding-right:24px;}
+#topbar-brand{width:var(--sidebar-w);flex-shrink:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;padding:0 22px;border-right:1px solid rgba(255,255,255,0.08);height:100%;}
+#topbar-brand img{height:30px;filter:brightness(0) invert(1);display:block;}
+#topbar-brand .lh-label{font-size:9px;font-weight:600;letter-spacing:0.38em;text-transform:uppercase;color:rgba(255,255,255,0.50);line-height:1;}
+#topbar-center{flex:1;display:flex;align-items:center;gap:10px;padding:0 24px;}
+#topbar-page-title{font-size:14px;font-weight:600;color:rgba(255,255,255,0.92);}
+.tb-sep{width:1px;height:16px;background:rgba(255,255,255,0.12);}
+#topbar-page-sub{font-size:12px;color:rgba(255,255,255,0.38);}
+#topbar-right{display:flex;align-items:center;gap:10px;}
+.demo-badge{font-size:9px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(246,82,117,0.15);color:var(--red);border:1px solid rgba(246,82,117,0.30);letter-spacing:0.05em;text-transform:uppercase;}
+.topbar-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(113,241,247,0.28);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--teal);cursor:pointer;}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--navy);border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+#sidebar::-webkit-scrollbar{width:3px;}
+#sidebar::-webkit-scrollbar-thumb{background:rgba(113,241,247,0.15);border-radius:2px;}
+.nav-section{font-size:9px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:16px 20px 5px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;border-left:2px solid transparent;color:rgba(255,255,255,0.45);transition:all 0.15s;text-decoration:none;font-size:12px;font-weight:500;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.80);border-left-color:rgba(113,241,247,0.25);}
+.nav-item.active{background:rgba(113,241,247,0.08);color:var(--teal);border-left-color:var(--teal);}
+.nav-item.active .nav-icon svg{stroke:var(--teal);}
+.nav-item:hover .nav-icon svg{stroke:rgba(255,255,255,0.75);}
+.nav-icon{width:16px;height:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-icon svg{width:14px;height:14px;stroke:rgba(255,255,255,0.38);stroke-width:1.5;fill:none;transition:stroke 0.15s;}
+.nav-label{white-space:nowrap;}
+.nav-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;}
+.nav-badge.warn{background:rgba(246,82,117,0.15);color:var(--red);border:1px solid rgba(246,82,117,0.25);}
+.nav-badge.ok{background:rgba(113,241,247,0.12);color:var(--teal);border:1px solid rgba(113,241,247,0.22);}
+.nav-divider{height:1px;background:rgba(255,255,255,0.06);margin:6px 20px;}
+.nav-footer{margin-top:auto;padding:14px 20px;border-top:1px solid rgba(255,255,255,0.07);font-size:9px;color:rgba(255,255,255,0.20);line-height:1.7;}
+.nav-footer span{color:var(--red);}
+
+/* MAIN */
+#main{margin-top:var(--topbar-h);margin-left:var(--sidebar-w);min-height:calc(100vh - var(--topbar-h));padding:28px 36px;background:var(--main-bg);display:flex;flex-direction:column;align-items:center;}
+
+/* SHARED */
+.card{border-radius:18px;background:var(--navy);box-shadow:0 8px 24px rgba(4,14,61,0.16);padding:20px 24px;margin-bottom:14px;}
+.card-title{font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.26);margin-bottom:14px;}
+.section-label{font-size:9px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:rgba(4,14,61,0.65);margin-bottom:8px;margin-top:6px;}
+
+/* GROUP SWITCHER */
+.group-switcher{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.group-btn{display:flex;align-items:center;gap:0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);cursor:pointer;transition:all 0.15s;background:var(--navy);}
+.group-btn:hover{border-color:rgba(113,241,247,0.28);}
+.group-btn.active{border-color:rgba(113,241,247,0.38);box-shadow:0 0 0 1px rgba(113,241,247,0.12);}
+.group-label{font-size:11px;font-weight:700;padding:7px 12px;color:rgba(255,255,255,0.45);letter-spacing:0.02em;transition:all 0.15s;}
+.group-btn.active .group-label{color:var(--teal);}
+.group-subs{display:flex;border-left:1px solid rgba(255,255,255,0.08);}
+.sub-btn{font-size:10px;font-weight:600;padding:7px 11px;color:rgba(255,255,255,0.35);cursor:pointer;transition:all 0.15s;border-right:1px solid rgba(255,255,255,0.06);}
+.sub-btn:last-child{border-right:none;}
+.sub-btn:hover{color:rgba(255,255,255,0.80);background:rgba(255,255,255,0.04);}
+.sub-btn.active{color:var(--teal);background:rgba(113,241,247,0.08);}
+
+/* VERDICT CARD */
+.verdict-card{border-radius:18px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden;}
+.verdict-card.ok{background:var(--navy);border:1px solid rgba(255,255,255,0.09);box-shadow:0 8px 28px rgba(4,14,61,0.18);}
+.verdict-card.ok::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at top left,rgba(113,241,247,0.07),transparent 40%);pointer-events:none;}
+.verdict-card.blocked{background:var(--navy);border:1px solid rgba(246,82,117,0.30);box-shadow:0 8px 28px rgba(246,82,117,0.10);}
+.verdict-card.blocked::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at top left,rgba(246,82,117,0.08),transparent 40%);pointer-events:none;}
+.verdict-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.verdict-left{}
+.verdict-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.22em;color:rgba(255,255,255,0.32);margin-bottom:5px;}
+.verdict-name{font-size:1.6rem;font-weight:600;letter-spacing:-0.04em;color:rgba(255,255,255,0.96);margin-bottom:4px;}
+.verdict-tagline{font-size:12px;color:rgba(255,255,255,0.40);}
+.verdict-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;}
+.verdict-level{font-size:2.2rem;font-weight:700;letter-spacing:-0.05em;line-height:1;}
+.verdict-level-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.18em;color:rgba(255,255,255,0.28);margin-top:2px;text-align:right;}
+.verdict-badges{display:flex;gap:6px;align-items:center;}
+.vbadge{font-size:10px;font-weight:600;padding:4px 10px;border-radius:999px;}
+.vbadge-blocked{background:rgba(246,82,117,0.15);color:var(--red);border:1px solid rgba(246,82,117,0.32);}
+.vbadge-gap-mod{background:rgba(192,166,255,0.12);color:var(--lav);border:1px solid rgba(192,166,255,0.28);}
+.vbadge-gap-sig{background:rgba(246,82,117,0.12);color:var(--red);border:1px solid rgba(246,82,117,0.24);}
+.vbadge-gap-ok{background:rgba(143,255,219,0.12);color:var(--green);border:1px solid rgba(143,255,219,0.22);}
+
+/* SCORE STRIP */
+.score-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.score-box{border-radius:14px;background:var(--navy);box-shadow:0 4px 14px rgba(4,14,61,0.14);padding:14px 18px;border:1px solid rgba(255,255,255,0.08);border-left-width:3px;}
+.score-box-label{font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.30);margin-bottom:7px;}
+.score-box-val{font-size:1.6rem;font-weight:600;letter-spacing:-0.04em;line-height:1;margin-bottom:5px;}
+.score-box-sub{font-size:11px;color:rgba(255,255,255,0.32);line-height:1.4;}
+
+/* CALLOUT — blocker or unlock */
+.callout{border-radius:16px;padding:20px 22px;margin-bottom:14px;background:var(--navy);box-shadow:0 8px 24px rgba(4,14,61,0.16);}
+.callout.blocker{border:1px solid rgba(246,82,117,0.35);}
+.callout.unlock{border:1px solid rgba(113,241,247,0.22);}
+.callout-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.callout-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-weight:700;}
+.callout-icon.red{background:rgba(246,82,117,0.18);color:var(--red);}
+.callout-icon.teal{background:rgba(113,241,247,0.14);color:var(--teal);}
+.callout-heading{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;}
+.callout-heading.red{color:var(--red);}
+.callout-heading.teal{color:var(--teal);}
+.callout-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.callout-item:last-child{border-bottom:none;padding-bottom:0;}
+.callout-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.callout-dot.red{background:var(--red);}
+.callout-dot.teal{background:var(--teal);}
+.callout-body{flex:1;}
+.callout-title{font-size:12px;font-weight:600;color:rgba(255,255,255,0.92);}
+.callout-desc{font-size:11px;color:rgba(255,255,255,0.40);margin-top:3px;line-height:1.5;}
+.callout-owner{font-size:9px;font-weight:600;padding:3px 9px;border-radius:999px;flex-shrink:0;align-self:center;}
+.owner-red{background:rgba(246,82,117,0.10);color:var(--red);border:1px solid rgba(246,82,117,0.20);}
+.owner-teal{background:rgba(113,241,247,0.08);color:var(--teal);border:1px solid rgba(113,241,247,0.18);}
+
+/* DIMENSION TABLE */
+.dim-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.dim-card{border-radius:14px;background:var(--navy);border:1px solid rgba(255,255,255,0.08);padding:14px 16px;}
+.dim-card-name{font-size:11px;font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:10px;}
+.dim-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.dim-bar-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.10em;min-width:56px;color:rgba(255,255,255,0.35);}
+.dim-bar-track{flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden;}
+.dim-bar-fill-s{height:100%;border-radius:999px;background:#8FFFDB;}
+.dim-bar-fill-a{height:100%;border-radius:999px;background:#71F1F7;opacity:0.80;}
+.dim-bar-val{font-size:11px;font-weight:600;min-width:24px;text-align:right;}
+.dim-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;}
+.dim-weight{font-size:9px;color:rgba(255,255,255,0.25);}
+.dim-gap-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;}
+.gap-ok{background:rgba(143,255,219,0.12);color:var(--green);border:1px solid rgba(143,255,219,0.20);}
+.gap-mod{background:rgba(192,166,255,0.12);color:var(--lav);border:1px solid rgba(192,166,255,0.22);}
+.gap-sig{background:rgba(246,82,117,0.12);color:var(--red);border:1px solid rgba(246,82,117,0.20);}
+
+/* CATEGORY RAG GRID */
+.rag-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.rag-card{border-radius:12px;background:var(--navy);padding:12px 14px;border:1px solid rgba(255,255,255,0.07);}
+.rag-card.rag-blocked{border-color:rgba(246,82,117,0.32);background:rgba(246,82,117,0.06);}
+.rag-card.rag-amber{border-color:rgba(192,166,255,0.22);}
+.rag-card.rag-green{border-color:rgba(143,255,219,0.18);}
+.rag-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px;}
+.rag-name{font-size:11px;font-weight:600;color:rgba(255,255,255,0.88);line-height:1.3;}
+.rag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.rag-dot.red{background:var(--red);}
+.rag-dot.amber{background:var(--lav);}
+.rag-dot.green{background:var(--green);}
+.rag-owner{font-size:9px;color:rgba(255,255,255,0.28);margin-bottom:6px;}
+.rag-status{font-size:10px;line-height:1.4;font-weight:500;}
+.rag-status.red{color:rgba(246,82,117,0.90);}
+.rag-status.amber{color:rgba(192,166,255,0.90);}
+.rag-status.green{color:rgba(143,255,219,0.80);}
+
+/* ACTIONS */
+.action-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.action-row:last-child{border-bottom:none;}
+.action-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.dot-red{background:var(--red);}
+.dot-lav{background:var(--lav);}
+.dot-green{background:var(--green);}
+.action-title{font-size:12px;font-weight:600;color:rgba(255,255,255,0.88);}
+.action-desc{font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;}
+.action-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.action-tag{font-size:9px;font-weight:600;padding:2px 7px;border-radius:999px;}
+.tag-blocked{background:rgba(246,82,117,0.12);color:var(--red);border:1px solid rgba(246,82,117,0.20);}
+.tag-must{background:rgba(192,166,255,0.10);color:var(--lav);border:1px solid rgba(192,166,255,0.22);}
+.tag-gap{background:rgba(143,255,219,0.10);color:var(--green);border:1px solid rgba(143,255,219,0.20);}
+.action-owner{font-size:9px;color:rgba(255,255,255,0.30);letter-spacing:0.01em;}
+
+.demo-watermark{position:fixed;bottom:14px;right:18px;font-size:9px;color:rgba(4,14,61,0.40);letter-spacing:0.06em;pointer-events:none;z-index:999;}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div id="topbar-brand">
+    <img src="https://cdn.prod.website-files.com/66f7a9d0051c2479948b2667/6930bea01a665531afb73e42_Crossfuze%20Logo_Cool%20Navy%20Gradient-p-500.png" alt="Crossfuze"/>
+    <span class="lh-label">Lighthouse</span>
+  </div>
+  <div id="topbar-center">
+    <span id="topbar-page-title">Offering Detail</span>
+    <div class="tb-sep"></div>
+    <span id="topbar-page-sub">SMART ITSM · Q1 2026</span>
+  </div>
+  <div id="topbar-right">
+    <span class="demo-badge">Demo data</span>
+    <div class="topbar-avatar">CF</div>
+  </div>
+</header>
+
+<nav id="sidebar">
+  <div class="nav-section">Main</div>
+  <a href="index.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+    <span class="nav-label">Hub</span>
+  </a>
+  <a href="portfolio.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+    <span class="nav-label">Portfolio Overview</span>
+  </a>
+  <a href="offering.html" class="nav-item active">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+    <span class="nav-label">Offering Detail</span>
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Tools</div>
+  <a href="scoring.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>
+    <span class="nav-label">Scoring Session</span>
+  </a>
+  <a href="actions.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+    <span class="nav-label">Action Log</span>
+    <span class="nav-badge warn">8</span>
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Modules</div>
+  <a href="https://crossfuze-lighthouse.github.io/ZOOM/aeo.html" target="_blank" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <span class="nav-label">AEO Module</span>
+    <span class="nav-badge ok">L3</span>
+  </a>
+  <a href="gtm-assets.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></span>
+    <span class="nav-label">GTM Assets</span>
+  </a>
+  <a href="architecture.html" class="nav-item">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+    <span class="nav-label">Architecture</span>
+  </a>
+  <div class="nav-footer">
+    <span>Demo data — illustrative only</span><br>
+    Q1 2026 · 5 offerings assessed<br>
+    Project Lighthouse v1.0
+  </div>
+</nav>
+
+<main id="main" class="fade-in">
+<div style="width:100%;max-width:1200px;">
+
+  <!-- GROUP SWITCHER -->
+  <div class="group-switcher">
+    <!-- SMART -->
+    <div class="group-btn active" id="grp-smart">
+      <div class="group-label">SMART</div>
+      <div class="group-subs">
+        <div class="sub-btn active" onclick="load('smart-itsm',this)">ITSM</div>
+        <div class="sub-btn" onclick="load('smart-csm',this)">CSM</div>
+        <div class="sub-btn" onclick="load('smart-hrsd',this)">HRSD</div>
+      </div>
+    </div>
+    <!-- OOTBaaS -->
+    <div class="group-btn" id="grp-ootbaas">
+      <div class="group-label">OOTBaaS</div>
+      <div class="group-subs">
+        <div class="sub-btn" onclick="load('ootbaas-itsm',this)">ITSM</div>
+      </div>
+    </div>
+    <!-- Managed -->
+    <div class="group-btn" id="grp-managed">
+      <div class="group-label">Managed</div>
+      <div class="group-subs">
+        <div class="sub-btn" onclick="load('managed-admin',this)">Admin</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERDICT CARD -->
+  <div class="verdict-card ok" id="verdict-card">
+    <div class="verdict-inner">
+      <div class="verdict-left">
+        <div class="verdict-eyebrow" id="v-group">SMART</div>
+        <div class="verdict-name" id="v-name">SMART ITSM</div>
+        <div class="verdict-tagline" id="v-tagline">Core ITSM deployment — Incident, Problem, Change, CMDB</div>
+      </div>
+      <div class="verdict-right">
+        <div>
+          <div class="verdict-level" id="v-level" style="color:#8FFFDB">L3</div>
+          <div class="verdict-level-label" id="v-level-label">Standardized</div>
+        </div>
+        <div class="verdict-badges" id="v-badges">
+          <span class="vbadge vbadge-gap-mod">Gap: 0.75 Moderate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORE STRIP -->
+  <div class="score-strip">
+    <div class="score-box" style="border-left-color:rgba(113,241,247,0.45);">
+      <div class="score-box-label">Authority Score</div>
+      <div class="score-box-val" style="color:#71F1F7" id="s-auth">3.25</div>
+      <div class="score-box-sub">What we can prove</div>
+    </div>
+    <div class="score-box" style="border-left-color:rgba(143,255,219,0.45);">
+      <div class="score-box-label">Strength CMI</div>
+      <div class="score-box-val" style="color:#8FFFDB" id="s-strength">4.00</div>
+      <div class="score-box-sub">What we believe we can do</div>
+    </div>
+    <div class="score-box" id="s-gap-box" style="border-left-color:rgba(192,166,255,0.45);">
+      <div class="score-box-label">Gap</div>
+      <div class="score-box-val" id="s-gap-val" style="color:#C0A6FF">0.75</div>
+      <div class="score-box-sub" id="s-gap-sub">Moderate — some evidence to build</div>
+    </div>
+  </div>
+
+  <!-- BLOCKER / UNLOCK CALLOUT -->
+  <div id="callout-section"></div>
+
+  <!-- DIMENSIONS -->
+  <div class="section-label">Strength vs Authority — by dimension</div>
+  <div class="dim-grid" id="dim-grid"></div>
+
+  <!-- CATEGORY RAG -->
+  <div class="section-label">Readiness by category</div>
+  <div class="rag-grid" id="rag-grid"></div>
+
+  <!-- PRIORITY ACTIONS -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="card-title" style="margin:0;">Priority actions</div>
+      <span style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(246,82,117,0.12);color:var(--red);border:1px solid rgba(246,82,117,0.20);" id="action-count">3 actions</span>
+    </div>
+    <div id="action-rows"></div>
+  </div>
+
+</div>
+</main>
+
+<div class="demo-watermark">Demo data — illustrative only · Project Lighthouse v1.0</div>
+
+<script>
+const DATA = {
+  'smart-itsm':{
+    group:'SMART',grp:'grp-smart',name:'SMART ITSM',
+    tagline:'Core ITSM deployment — Incident, Problem, Change, CMDB',
+    level:'L3',levelLabel:'Standardized',levelColour:'#8FFFDB',
+    isBlocked:false,
+    auth:3.25,strength:4.00,gap:0.75,gapLabel:'Moderate',
+    gapColour:'#C0A6FF',gapBadgeClass:'vbadge-gap-mod',
+    gapSubText:'Moderate — some evidence to build',
+    dims:[
+      {name:'Strategic Alignment',weight:'50%',sVal:3.7,aVal:3.0,sBar:74,aBar:60,gap:0.7,gapClass:'gap-mod'},
+      {name:'Commercial Readiness',weight:'25%',sVal:4.1,aVal:4.0,sBar:82,aBar:80,gap:0.1,gapClass:'gap-ok'},
+      {name:'Delivery Expertise',weight:'25%',sVal:3.5,aVal:3.0,sBar:70,aBar:60,gap:0.5,gapClass:'gap-mod'},
+    ],
+    callout:{
+      type:'unlock',
+      heading:'To claim L4 — 2 things needed',
+      items:[
+        {title:'Win rate tracked by offering (4.17)',desc:'Not yet in CRM by offering — required for L4 Strategic claim',owner:'CRO / RevOps'},
+        {title:'Named SN overlay established (7.13)',desc:'Overlay relationship not formally confirmed — needed for L4 SA',owner:'Alliance Manager'},
+      ]
+    },
+    categories:[
+      {name:'Sales Readiness',owner:'GTM Lead',rag:'green',status:'On track for L4'},
+      {name:'Commercial Readiness',owner:'Offering Owner',rag:'green',status:'Strong — L4 evidence in place'},
+      {name:'Delivery Readiness',owner:'Practice Lead',rag:'amber',status:'L3 solid, L4 in progress'},
+      {name:'Reference & Proof',owner:'Marketing',rag:'amber',status:'Case studies building'},
+      {name:'Market & Strategy',owner:'GTM Lead',rag:'amber',status:'ICP defined, L4 gaps remain'},
+      {name:'Demand & Marketing',owner:'Marketing',rag:'amber',status:'L3 achieved, L4 gaps'},
+      {name:'Partner & SN Alignment',owner:'Alliance Mgr',rag:'amber',status:'Portal complete, overlay pending'},
+      {name:'CS & Expansion',owner:'CS Lead',rag:'green',status:'NRR tracking in place'},
+    ],
+    actions:[
+      {dot:'dot-lav',title:'Win rate tracked by offering (4.17)',desc:'L4 SA must-have — not in CRM by offering yet',tag:'Must-have',tagClass:'tag-must',owner:'CRO / RevOps'},
+      {dot:'dot-lav',title:'Named SN overlay confirmed (7.13)',desc:'L4 SA must-have — overlay not formally established',tag:'Must-have',tagClass:'tag-must',owner:'Alliance Manager'},
+      {dot:'dot-green',title:'SEO / AEO strategy defined (6.6)',desc:'Low confidence on GTM collateral — validate before external claims',tag:'Data gap',tagClass:'tag-gap',owner:'Marketing'},
+    ],
+  },
+  'smart-csm':{
+    group:'SMART',grp:'grp-smart',name:'SMART CSM',
+    tagline:'Customer Service Management — omnichannel, case management, knowledge, portals',
+    level:'L3',levelLabel:'Standardized',levelColour:'#8FFFDB',
+    isBlocked:false,
+    auth:2.75,strength:3.40,gap:0.65,gapLabel:'Moderate',
+    gapColour:'#C0A6FF',gapBadgeClass:'vbadge-gap-mod',
+    gapSubText:'Moderate — case study is the key unlock',
+    dims:[
+      {name:'Strategic Alignment',weight:'50%',sVal:3.5,aVal:3.0,sBar:70,aBar:60,gap:0.5,gapClass:'gap-mod'},
+      {name:'Commercial Readiness',weight:'25%',sVal:3.5,aVal:3.0,sBar:70,aBar:60,gap:0.5,gapClass:'gap-mod'},
+      {name:'Delivery Expertise',weight:'25%',sVal:3.3,aVal:3.0,sBar:66,aBar:60,gap:0.3,gapClass:'gap-ok'},
+    ],
+    callout:{
+      type:'unlock',
+      heading:'To claim L4 — 2 things needed',
+      items:[
+        {title:'Publish a CSM case study (4.9)',desc:'No external CSM case study exists — blocks L3 → L4 SA progression',owner:'Marketing'},
+        {title:'CSAT formally tracked per engagement (3.18)',desc:'Customer satisfaction not measured systematically yet',owner:'Practice Lead'},
+      ]
+    },
+    categories:[
+      {name:'Sales Readiness',owner:'GTM Lead',rag:'amber',status:'Deck exists, win rate gaps'},
+      {name:'Commercial Readiness',owner:'Offering Owner',rag:'amber',status:'Pricing defined, SOW in use'},
+      {name:'Delivery Readiness',owner:'Practice Lead',rag:'amber',status:'Playbook exists, CSAT missing'},
+      {name:'Reference & Proof',owner:'Marketing',rag:'red',status:'No published case study yet'},
+      {name:'Market & Strategy',owner:'GTM Lead',rag:'amber',status:'ICP defined, campaigns light'},
+      {name:'Demand & Marketing',owner:'Marketing',rag:'amber',status:'Basic campaigns, limited proof'},
+      {name:'Partner & SN Alignment',owner:'Alliance Mgr',rag:'green',status:'Portal complete, overlay active'},
+      {name:'CS & Expansion',owner:'CS Lead',rag:'amber',status:'Renewals tracked, NRR targets light'},
+    ],
+    actions:[
+      {dot:'dot-red',title:'Publish a CSM case study (4.9)',desc:'L3 SA must-have — no external case study exists, highest impact action',tag:'Must-have',tagClass:'tag-must',owner:'Marketing'},
+      {dot:'dot-lav',title:'Formalise CSAT tracking (3.18)',desc:'L3 DE must-have — satisfaction not measured per engagement',tag:'Must-have',tagClass:'tag-must',owner:'Practice Lead'},
+      {dot:'dot-green',title:'SN Commercial Partnership scoring (7.x)',desc:'Low confidence — validate SN positioning before external claims',tag:'Data gap',tagClass:'tag-gap',owner:'Alliance Manager'},
+    ],
+  },
+  'smart-hrsd':{
+    group:'SMART',grp:'grp-smart',name:'SMART HRSD',
+    tagline:'HR Service Delivery — employee portal, case management, knowledge, lifecycle',
+    level:'L2',levelLabel:'Developing',levelColour:'#FFB347',
+    isBlocked:false,
+    auth:2.00,strength:3.10,gap:0.85,gapLabel:'Significant',
+    gapColour:'#F65275',gapBadgeClass:'vbadge-gap-sig',
+    gapSubText:'Significant — foundational assets needed before L3',
+    dims:[
+      {name:'Strategic Alignment',weight:'50%',sVal:3.5,aVal:2.0,sBar:70,aBar:40,gap:1.5,gapClass:'gap-sig'},
+      {name:'Commercial Readiness',weight:'25%',sVal:3.3,aVal:2.0,sBar:66,aBar:40,gap:1.3,gapClass:'gap-sig'},
+      {name:'Delivery Expertise',weight:'25%',sVal:2.8,aVal:2.0,sBar:56,aBar:40,gap:0.8,gapClass:'gap-mod'},
+    ],
+    callout:{
+      type:'unlock',
+      heading:'To claim L3 — 3 things needed',
+      items:[
+        {title:'Build HRSD sales deck (1.4)',desc:'L2 CR must-have — no HRSD-specific deck exists',owner:'GTM Lead'},
+        {title:'Define pricing model (2.3)',desc:'L2 CR must-have — pricing undefined, blocks commercial readiness',owner:'Offering Owner'},
+        {title:'Publish min 1 case study (4.9)',desc:'L3 SA must-have — no HRSD case study published yet',owner:'Marketing'},
+      ]
+    },
+    categories:[
+      {name:'Sales Readiness',owner:'GTM Lead',rag:'red',status:'Deck missing — L2 must-have'},
+      {name:'Commercial Readiness',owner:'Offering Owner',rag:'red',status:'Pricing undefined — L2 must-have'},
+      {name:'Delivery Readiness',owner:'Practice Lead',rag:'amber',status:'Partial — playbook in draft'},
+      {name:'Reference & Proof',owner:'Marketing',rag:'red',status:'No case study or reference'},
+      {name:'Market & Strategy',owner:'GTM Lead',rag:'amber',status:'ICP draft exists'},
+      {name:'Demand & Marketing',owner:'Marketing',rag:'red',status:'No demand activity yet'},
+      {name:'Partner & SN Alignment',owner:'Alliance Mgr',rag:'amber',status:'Portal complete, overlay needed'},
+      {name:'CS & Expansion',owner:'CS Lead',rag:'amber',status:'Early stage — few engagements'},
+    ],
+    actions:[
+      {dot:'dot-red',title:'Build HRSD sales deck (1.4)',desc:'L2 CR must-have — no deck exists, immediate priority',tag:'Must-have',tagClass:'tag-must',owner:'GTM Lead'},
+      {dot:'dot-red',title:'Define HRSD pricing model (2.3)',desc:'L2 CR must-have — pricing undefined, blocks commercial readiness claim',tag:'Must-have',tagClass:'tag-must',owner:'Offering Owner'},
+      {dot:'dot-lav',title:'Publish min 1 HRSD case study (4.9)',desc:'L3 SA must-have — needed to progress beyond L2',tag:'Must-have',tagClass:'tag-must',owner:'Marketing'},
+    ],
+  },
+  'ootbaas-itsm':{
+    group:'OOTBaaS',grp:'grp-ootbaas',name:'OOTBaaS ITSM',
+    tagline:'Out-of-the-box ITSM — fixed scope, fixed price, 6-week delivery',
+    level:'L1',levelLabel:'Blocked',levelColour:'#F65275',
+    isBlocked:true,
+    auth:1.50,strength:2.60,gap:0.85,gapLabel:'Significant',
+    gapColour:'#F65275',gapBadgeClass:'vbadge-blocked',
+    gapSubText:'Significant — 2 must-haves blocking L2 claim',
+    dims:[
+      {name:'Strategic Alignment',weight:'50%',sVal:2.9,aVal:2.0,sBar:58,aBar:40,gap:0.9,gapClass:'gap-mod'},
+      {name:'Commercial Readiness',weight:'25%',sVal:2.5,aVal:1.0,sBar:50,aBar:20,gap:1.5,gapClass:'gap-sig'},
+      {name:'Delivery Expertise',weight:'25%',sVal:2.3,aVal:1.0,sBar:46,aBar:20,gap:1.3,gapClass:'gap-sig'},
+    ],
+    callout:{
+      type:'blocker',
+      heading:'Blocked at L1 — 2 must-haves missing',
+      items:[
+        {title:'SOW / proposal template in use (2.6)',desc:'L2 CR must-have — SOW exists but not actively used on live deals',owner:'Offering Owner'},
+        {title:'Delivery playbook documented (3.7)',desc:'L2 DE must-have — no formal playbook exists for this offering',owner:'Practice Lead'},
+      ]
+    },
+    categories:[
+      {name:'Sales Readiness',owner:'GTM Lead',rag:'amber',status:'Deck exists, pipeline light'},
+      {name:'Commercial Readiness',owner:'Offering Owner',rag:'red',status:'SOW not in use — BLOCKED'},
+      {name:'Delivery Readiness',owner:'Practice Lead',rag:'red',status:'Playbook missing — BLOCKED'},
+      {name:'Reference & Proof',owner:'Marketing',rag:'amber',status:'1 reference, no case study'},
+      {name:'Market & Strategy',owner:'GTM Lead',rag:'amber',status:'ICP defined, campaigns none'},
+      {name:'Demand & Marketing',owner:'Marketing',rag:'red',status:'No demand activity'},
+      {name:'Partner & SN Alignment',owner:'Alliance Mgr',rag:'amber',status:'Portal complete'},
+      {name:'CS & Expansion',owner:'CS Lead',rag:'amber',status:'Early — few live engagements'},
+    ],
+    actions:[
+      {dot:'dot-red',title:'SOW template actively used on deals (2.6)',desc:'L2 CR must-have — currently not used on live deals, immediate block',tag:'Blocked',tagClass:'tag-blocked',owner:'Offering Owner'},
+      {dot:'dot-red',title:'Delivery playbook documented (3.7)',desc:'L2 DE must-have — no playbook exists, second immediate block',tag:'Blocked',tagClass:'tag-blocked',owner:'Practice Lead'},
+      {dot:'dot-lav',title:'Build sales deck (1.4)',desc:'L2 CR must-have — once blocks cleared, deck is next priority',tag:'Must-have',tagClass:'tag-must',owner:'GTM Lead'},
+    ],
+  },
+  'managed-admin':{
+    group:'Managed',grp:'grp-managed',name:'Managed Admin',
+    tagline:'Ongoing ServiceNow administration — platform support, minor enhancements, user management',
+    level:'L2',levelLabel:'Developing',levelColour:'#FFB347',
+    isBlocked:false,
+    auth:2.25,strength:2.80,gap:0.30,gapLabel:'Aligned',
+    gapColour:'#8FFFDB',gapBadgeClass:'vbadge-gap-ok',
+    gapSubText:'Aligned — strongest evidence-to-capability ratio',
+    dims:[
+      {name:'Strategic Alignment',weight:'50%',sVal:2.8,aVal:2.0,sBar:56,aBar:40,gap:0.8,gapClass:'gap-mod'},
+      {name:'Commercial Readiness',weight:'25%',sVal:3.1,aVal:3.0,sBar:62,aBar:60,gap:0.1,gapClass:'gap-ok'},
+      {name:'Delivery Expertise',weight:'25%',sVal:2.8,aVal:2.0,sBar:56,aBar:40,gap:0.8,gapClass:'gap-mod'},
+    ],
+    callout:{
+      type:'unlock',
+      heading:'To claim L3 — 2 things needed',
+      items:[
+        {title:'Publish a Managed Admin case study (4.9)',desc:'L3 SA must-have — no external case study published yet',owner:'Marketing'},
+        {title:'Define expansion triggers and pathway (8.3)',desc:'L3 SA — expansion triggers not formally documented, key for NRR',owner:'CS Lead'},
+      ]
+    },
+    categories:[
+      {name:'Sales Readiness',owner:'GTM Lead',rag:'green',status:'Deck and qualification in use'},
+      {name:'Commercial Readiness',owner:'Offering Owner',rag:'green',status:'Pricing, SOW, margins tracked'},
+      {name:'Delivery Readiness',owner:'Practice Lead',rag:'green',status:'Playbook in use, CSAT tracked'},
+      {name:'Reference & Proof',owner:'Marketing',rag:'amber',status:'References exist, no case study'},
+      {name:'Market & Strategy',owner:'GTM Lead',rag:'amber',status:'ICP defined, thought leadership light'},
+      {name:'Demand & Marketing',owner:'Marketing',rag:'amber',status:'Account list exists, campaigns light'},
+      {name:'Partner & SN Alignment',owner:'Alliance Mgr',rag:'green',status:'Portal complete, overlay active'},
+      {name:'CS & Expansion',owner:'CS Lead',rag:'amber',status:'NRR tracked, expansion triggers missing'},
+    ],
+    actions:[
+      {dot:'dot-lav',title:'Publish Managed Admin case study (4.9)',desc:'L3 SA must-have — no published case study, highest SA impact',tag:'Must-have',tagClass:'tag-must',owner:'Marketing'},
+      {dot:'dot-lav',title:'Document expansion triggers (8.3)',desc:'L3 SA — triggers not defined, critical for NRR and L3 claim',tag:'Must-have',tagClass:'tag-must',owner:'CS Lead'},
+      {dot:'dot-green',title:'Target account list validated (6.8)',desc:'Low confidence — confirm TAL is in CRM, not spreadsheet',tag:'Data gap',tagClass:'tag-gap',owner:'Marketing'},
+    ],
+  },
+};
+
+const RAG_COLOURS = {
+  red:  {dot:'red',  cardClass:'rag-blocked', statusClass:'red'},
+  amber:{dot:'amber',cardClass:'rag-amber',   statusClass:'amber'},
+  green:{dot:'green',cardClass:'rag-green',   statusClass:'green'},
+};
+
+function load(key, clickedSub) {
+  const o = DATA[key];
+  if(!o) return;
+
+  // Group buttons
+  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(o.grp).classList.add('active');
+
+  // Sub buttons
+  document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+  if(clickedSub) clickedSub.classList.add('active');
+
+  // Topbar
+  document.getElementById('topbar-page-sub').textContent = `${o.name} · Q1 2026`;
+
+  // Verdict card
+  const vc = document.getElementById('verdict-card');
+  vc.className = 'verdict-card ' + (o.isBlocked ? 'blocked' : 'ok');
+  document.getElementById('v-group').textContent = o.group;
+  document.getElementById('v-name').textContent = o.name;
+  document.getElementById('v-tagline').textContent = o.tagline;
+  document.getElementById('v-level').textContent = o.level;
+  document.getElementById('v-level').style.color = o.levelColour;
+  document.getElementById('v-level-label').textContent = o.levelLabel;
+  document.getElementById('v-badges').innerHTML = `<span class="vbadge ${o.gapBadgeClass}">${o.isBlocked ? '⚠ Blocked' : 'Gap: '+o.gap+' '+o.gapLabel}</span>`;
+
+  // Scores
+  document.getElementById('s-auth').textContent = o.auth.toFixed(2);
+  document.getElementById('s-strength').textContent = o.strength.toFixed(2);
+  document.getElementById('s-gap-val').textContent = o.gap.toFixed(2);
+  document.getElementById('s-gap-val').style.color = o.gapColour;
+  document.getElementById('s-gap-sub').textContent = o.gapSubText;
+
+  // Callout
+  const c = o.callout;
+  const isBlocker = c.type === 'blocker';
+  const calloutHtml = `
+    <div class="callout ${isBlocker ? 'blocker' : 'unlock'}" style="margin-bottom:14px;">
+      <div class="callout-header">
+        <div class="callout-icon ${isBlocker ? 'red' : 'teal'}">${isBlocker ? '⚠' : '→'}</div>
+        <div class="callout-heading ${isBlocker ? 'red' : 'teal'}">${c.heading}</div>
+      </div>
+      ${c.items.map(item => `
+        <div class="callout-item">
+          <div class="callout-dot ${isBlocker ? 'red' : 'teal'}"></div>
+          <div class="callout-body">
+            <div class="callout-title">${item.title}</div>
+            <div class="callout-desc">${item.desc}</div>
+          </div>
+          <span class="callout-owner ${isBlocker ? 'owner-red' : 'owner-teal'}">${item.owner}</span>
+        </div>
+      `).join('')}
+    </div>`;
+  document.getElementById('callout-section').innerHTML = calloutHtml;
+
+  // Dimensions
+  const dimHtml = o.dims.map(d => `
+    <div class="dim-card">
+      <div class="dim-card-name">${d.name}</div>
+      <div class="dim-bar-row">
+        <div class="dim-bar-label">Strength</div>
+        <div class="dim-bar-track"><div class="dim-bar-fill-s" style="width:${d.sBar}%"></div></div>
+        <div class="dim-bar-val" style="color:#8FFFDB">${d.sVal.toFixed(1)}</div>
+      </div>
+      <div class="dim-bar-row">
+        <div class="dim-bar-label">Authority</div>
+        <div class="dim-bar-track"><div class="dim-bar-fill-a" style="width:${d.aBar}%"></div></div>
+        <div class="dim-bar-val" style="color:#71F1F7">${d.aVal.toFixed(1)}</div>
+      </div>
+      <div class="dim-card-footer">
+        <span class="dim-weight">${d.weight} of CMI</span>
+        <span class="dim-gap-pill ${d.gapClass}">Gap ${d.gap.toFixed(1)}</span>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('dim-grid').innerHTML = dimHtml;
+
+  // RAG categories
+  const ragHtml = o.categories.map(cat => {
+    const r = RAG_COLOURS[cat.rag];
+    return `
+      <div class="rag-card ${r.cardClass}">
+        <div class="rag-top">
+          <div class="rag-name">${cat.name}</div>
+          <div class="rag-dot ${r.dot}"></div>
+        </div>
+        <div class="rag-owner">${cat.owner}</div>
+        <div class="rag-status ${r.statusClass}">${cat.status}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('rag-grid').innerHTML = ragHtml;
+
+  // Actions
+  document.getElementById('action-count').textContent = `${o.actions.length} actions`;
+  const actionHtml = o.actions.map(a => `
+    <div class="action-row">
+      <div class="action-dot ${a.dot}"></div>
+      <div style="flex:1">
+        <div class="action-title">${a.title}</div>
+        <div class="action-desc">${a.desc}</div>
+      </div>
+      <div class="action-right">
+        <span class="action-tag ${a.tagClass}">${a.tag}</span>
+        <span class="action-owner">${a.owner}</span>
+      </div>
+    </div>`).join('');
+  document.getElementById('action-rows').innerHTML = actionHtml;
+}
+
+// Init — load SMART ITSM
+load('smart-itsm', document.querySelector('.sub-btn.active'));
+</script>
+</body>
+</html>
